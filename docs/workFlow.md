@@ -21,3 +21,8 @@ When creating a pull request, the automatic tests should run automatically. If a
 ## Deployments 🚀
 
 TDB
+
+## Implementation
+
+We write code using the principles of TDD. Write the test first then write the code.
+We also follow the principles of DRY, YAGNI and Clean Code to make the code as readable as possible.

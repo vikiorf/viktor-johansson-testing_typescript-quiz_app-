@@ -20,3 +20,7 @@ For syntax we follow the [google TypeScript style guide](https://google.github.i
 ## Naming style
 
 Variable names should follow the clean code standard by having descriptive and informative names.
+
+# Architectural Design
+
+For code implementation, we follow the design principles of DRY, YAGNI and Clean Code.
