@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  nginx:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    ports:
+      # Setting port for NGINX.
+      # Can be set with env-variable 'NGINX_PORT'
+      - ${NGINX_PORT}:80
