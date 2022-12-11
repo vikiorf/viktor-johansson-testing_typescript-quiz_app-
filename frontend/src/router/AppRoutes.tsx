@@ -5,8 +5,8 @@ import PageLoading from '@/components/common/PageLoading';
 import SubPage from '@/pages/admin/SubPage';
 import NotFound from '@/pages/NotFound';
 
+const HomeView = lazy(() => import('@/pages/HomeView'));
 const Admin = lazy(() => import('@/pages/Admin'));
-const Front = lazy(() => import('@/pages/Front'));
 const Login = lazy(() => import('@/pages/Login'));
 
 const AppRoutes = () => {
@@ -18,7 +18,7 @@ const AppRoutes = () => {
           path={`/`}
           element={
             <Suspense fallback={<PageLoading />}>
-              <Front />
+              <HomeView />
             </Suspense>
           }
         />
