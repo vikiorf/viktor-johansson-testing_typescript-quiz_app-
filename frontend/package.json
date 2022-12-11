@@ -1,45 +1,68 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@reduxjs/toolkit": "^1.9.1",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^14.4.3",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^17.0.45",
-    "@types/react": "^18.0.26",
-    "@types/react-dom": "^18.0.9",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-redux": "^8.0.5",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.9.3",
-    "web-vitals": "^2.1.4"
-  },
+  "name": "quiz-app",
+  "version": "0.0.0",
+  "keywords": [
+    "vite",
+    "template",
+    "react-template",
+    "react",
+    "tailwindcss",
+    "mui"
+  ],
+  "description": "A vite template with react,tailwindcss,mui,react-router,redux",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "lint": "eslint ./src --ext .js,.ts,.tsx",
+    "test": "yarn lint --fix"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "dependencies": {
+    "@douyinfe/semi-icons": "^2.0.8",
+    "@douyinfe/semi-ui": "^2.0.1",
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
+    "@reduxjs/toolkit": "^1.6.2",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
+    "react-icons": "^4.3.1",
+    "react-redux": "^7.2.6",
+    "react-router-dom": "6",
+    "redux": "^4.1.2",
+    "redux-persist": "^6.0.0",
+    "store": "^2.0.12",
+    "styled-components": "^5.3.3"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "@commitlint/cli": "^14.1.0",
+    "@commitlint/config-conventional": "^14.1.0",
+    "@loadable/component": "^5.15.0",
+    "@types/loadable__component": "^5.13.4",
+    "@types/node": "14.17.2",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-router": "^5.1.17",
+    "@types/react-router-dom": "^5.3.2",
+    "@types/redux-logger": "^3.0.9",
+    "@types/store": "^2.0.2",
+    "@typescript-eslint/parser": "^5.2.0",
+    "@vitejs/plugin-react": "^1.0.0",
+    "autoprefixer": "^9",
+    "eslint": "^8.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "postcss": "^7",
+    "prettier": "^2.4.1",
+    "redux-logger": "^3.0.6",
+    "sass": "^1.43.4",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
+    "typescript": "^4.3.2",
+    "vite": "^2.6.4",
+    "vite-plugin-html": "^2.1.1",
+    "vite-plugin-imp": "^2.0.10"
   }
 }
