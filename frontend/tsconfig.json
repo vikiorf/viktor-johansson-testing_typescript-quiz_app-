@@ -16,9 +16,10 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
+    "types": ["vitest/globals", "@types/jest", "node"],
     "paths": {
       "@/*": ["src/*"]
     }
   },
-  "include": ["./src"]
+  "include": ["./src", "./tests"]
 }
