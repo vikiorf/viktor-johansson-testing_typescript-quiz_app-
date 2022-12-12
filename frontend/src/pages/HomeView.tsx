@@ -1,4 +1,5 @@
 import ListComponent, { GapSizeEnum } from '@/components/common/ListComponent';
+import ListItemComponent from '@/components/common/ListItemComponent';
 import { FC } from 'react';
 
 type IHomeView = {};
@@ -13,8 +14,8 @@ const HomeView: FC<IHomeView> = () => {
         Welcome [user]
       </h1>
       <ListComponent gapSize={GapSizeEnum.MEDIUM}>
-        <li className="text-start">🙍‍♀️ Play alone</li>
-        <li>💃 Play with other people</li>
+        <ListItemComponent>🙍‍♀️ Play alone</ListItemComponent>
+        <ListItemComponent>💃 Play with other people</ListItemComponent>
       </ListComponent>
     </div>
   );

@@ -1,10 +1,15 @@
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 import HomeView from '../src/pages/HomeView';
 
 describe('Tests HomeView', function () {
   it('verifies welcome text in HomeView is rendered', function () {
-    render(<HomeView />);
+    render(
+      <MemoryRouter>
+        <HomeView />
+      </MemoryRouter>,
+    );
 
     const welcomeHeading = screen.getByTestId('welcome-heading');
 
