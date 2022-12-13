@@ -1,16 +1,10 @@
-/*
- * 数据操作
- * */
 import store from 'store';
 
 export interface DataOp {
-  // eslint-disable-next-line no-unused-vars
   setValue(key: string, val: string): void;
 
-  // eslint-disable-next-line no-unused-vars
   getValue(key: string, defaultValue: string): string;
 
-  // eslint-disable-next-line no-unused-vars
   delValue(key: string): void;
 }
 
