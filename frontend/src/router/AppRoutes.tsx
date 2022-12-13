@@ -1,4 +1,3 @@
-import React, { lazy, Suspense } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 
 import HomeView from '@/pages/HomeView';
