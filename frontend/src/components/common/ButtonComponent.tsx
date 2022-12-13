@@ -9,13 +9,13 @@ type IInputComponent = {
   buttonType?: 'button' | 'submit';
   buttonStyle?: ButtonStyleEnum;
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 const ButtonComponent: FC<IInputComponent> = props => {
   const [buttonType, setButtonType] = useState('button');
   const [className, setClassName] = useState(
-    'placeholder-placeholder-color pl-1 h-10 rounded w-24 hover:cursor-pointer justify-self-center ',
+    'placeholder-placeholder-color pl-1 h-10 rounded w-24 hover:cursor-pointer self-center justify-self-center ',
   );
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const ButtonComponent: FC<IInputComponent> = props => {
   }, []);
 
   const clickHandler = () => {
-    props.onClick();
+    if (props.onClick) props.onClick();
   };
 
   return (

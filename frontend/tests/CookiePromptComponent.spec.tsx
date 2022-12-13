@@ -9,12 +9,10 @@ describe('Tests Cookie Prompt Component', function () {
     renderWithProviders(<CookiePromptComponent />);
 
     const modalContentElement = screen.getByTestId('modal-content-element');
-    const paragraphElement = modalContentElement.querySelector('p');
+    const paragraphElement = screen.getByTestId('cookie-prompt-paragraph');
     const acceptButtonElement = modalContentElement.querySelector(
       'input',
     ) as HTMLInputElement;
-
-    assert(paragraphElement, 'Privacy paragraph could not be found.');
 
     expect(modalContentElement).toBeTruthy;
     expect(paragraphElement).toBeTruthy;
@@ -25,7 +23,7 @@ describe('Tests Cookie Prompt Component', function () {
 
   it('verifies state is set when accepting cookies.', function () {
     renderWithProviders(<CookiePromptComponent />, {
-      preloadedState: { user: { isCookiesConsentApproved: false } },
+      preloadedState: { user: { name: '', isCookiesConsentApproved: false } },
     });
 
     const modalContentElement = screen.getByTestId('modal-content-element');
