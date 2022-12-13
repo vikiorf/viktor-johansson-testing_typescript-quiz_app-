@@ -5,12 +5,14 @@ import { useAppSelector } from '@/app/hooks';
 import ListItemComponent from '@/components/common/ListItemComponent';
 import ListComponent, { GapSizeEnum } from '@/components/common/ListComponent';
 import CookiePromptComponent from '@/components/Specific/CookiePromptComponent';
-import { getStoredCookieConsent } from '@/store/modules/user.slice';
+import { getStoredCookieConsent, getStoredUserName } from '@/store/modules/user.slice';
+import NameInputComponent from '@/components/Specific/NameInputComponent';
 
 type IHomeView = {};
 
 const HomeView: FC<IHomeView> = () => {
   const isCookiesConsentApproved = useAppSelector(getStoredCookieConsent);
+  const isUserNameEntered = !!useAppSelector(getStoredUserName);
 
   return (
     <div className="wrapper h-screen w-screen p-10 bg-primary-bg ">
@@ -24,6 +26,7 @@ const HomeView: FC<IHomeView> = () => {
         <ListItemComponent>🙍‍♀️ Play alone</ListItemComponent>
         <ListItemComponent>💃 Play with other people</ListItemComponent>
       </ListComponent>
+      {!isUserNameEntered && <NameInputComponent />}
       {!isCookiesConsentApproved && <CookiePromptComponent />}
     </div>
   );
