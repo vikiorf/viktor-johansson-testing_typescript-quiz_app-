@@ -17,7 +17,6 @@ const devEnvMetaVariable = import.meta.env.DEV;
 const IS_DEV_ENV = typeof devEnvMetaVariable === 'boolean' && devEnvMetaVariable;
 
 export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
-  console.log('preloadedState', preloadedState);
   return configureStore({
     devTools: import.meta.env.DEV,
     reducer: persistedReducer,
@@ -31,7 +30,7 @@ export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
       });
 
       if (IS_DEV_ENV) {
-        mdw = mdw.concat(logger);
+        return mdw.concat(logger);
       }
       return mdw;
     },
