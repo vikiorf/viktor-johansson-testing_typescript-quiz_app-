@@ -9,7 +9,7 @@ type IInputComponent = {
   buttonType?: 'button' | 'submit';
   buttonStyle?: ButtonStyleEnum;
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 const ButtonComponent: FC<IInputComponent> = props => {
@@ -27,7 +27,7 @@ const ButtonComponent: FC<IInputComponent> = props => {
   }, []);
 
   const clickHandler = () => {
-    props.onClick();
+    if (props.onClick) props.onClick();
   };
 
   return (
