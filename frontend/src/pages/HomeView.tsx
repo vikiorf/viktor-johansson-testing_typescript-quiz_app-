@@ -1,6 +1,7 @@
-import ListComponent, { GapSizeEnum } from '@/components/common/ListComponent';
-import ListItemComponent from '@/components/common/ListItemComponent';
 import { FC } from 'react';
+
+import ListItemComponent from '@/components/common/ListItemComponent';
+import ListComponent, { GapSizeEnum } from '@/components/common/ListComponent';
 
 type IHomeView = {};
 
