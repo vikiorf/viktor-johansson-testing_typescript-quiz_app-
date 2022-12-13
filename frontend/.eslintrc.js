@@ -31,6 +31,7 @@ module.exports = {
   ],
   plugins: ['simple-import-sort', 'prettier', 'testing-library'],
   rules: {
+    'no-mocha-arrows': 0,
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
