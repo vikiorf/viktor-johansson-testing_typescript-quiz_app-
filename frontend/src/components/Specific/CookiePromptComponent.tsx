@@ -22,7 +22,7 @@ const CookiePromptComponent: FC<ICookiePromptComponent> = props => {
         {isCookiesConsentApproved ? 'Hidden' : 'Showing'}
       </div>
       <ModalComponent>
-        <p>We respect your privacy. To use this application cookies are required.</p>
+        <p data-testid="cookie-prompt-paragraph">We respect your privacy. To use this application cookies are required.</p>
         <ButtonComponent label="Accept" onClick={acceptCookieClickHandler} />
       </ModalComponent>
     </>
