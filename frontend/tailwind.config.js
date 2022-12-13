@@ -12,6 +12,8 @@ module.exports = {
         'primary-bg': '#161E22',
         'secondary-bg': '#22333B',
         'primary-color': '#FFFFFF',
+        'primary-button-bg': '#C6AC8F',
+        'secondary-button-bg': '#5A4B38',
         'placeholder-color': '#C8C8C8',
       },
     },
