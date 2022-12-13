@@ -12,7 +12,9 @@ type IHomeView = {};
 
 const HomeView: FC<IHomeView> = () => {
   const isCookiesConsentApproved = useAppSelector(getStoredCookieConsent);
-  const isUserNameEntered = !!useAppSelector(getStoredUserName);
+  const storedUserName = useAppSelector(getStoredUserName);
+
+  const isUserNameEntered = !!storedUserName;
 
   return (
     <div className="wrapper h-screen w-screen p-10 bg-primary-bg ">
@@ -20,7 +22,7 @@ const HomeView: FC<IHomeView> = () => {
         className="font-bold text-3xl text-center text-primary-color mt-0 font-default"
         data-testid="welcome-heading"
       >
-        Welcome [user]
+        Welcome {storedUserName}
       </h1>
       <ListComponent gapSize={GapSizeEnum.MEDIUM}>
         <ListItemComponent>🙍‍♀️ Play alone</ListItemComponent>
