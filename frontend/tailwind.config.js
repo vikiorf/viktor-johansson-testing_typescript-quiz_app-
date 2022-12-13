@@ -8,9 +8,11 @@ module.exports = {
     },
     extend: {
       colors: {
+        'input-bg': '#4A565A',
         'primary-bg': '#161E22',
         'secondary-bg': '#22333B',
         'primary-color': '#FFFFFF',
+        'placeholder-color': '#C8C8C8',
       },
     },
   },
