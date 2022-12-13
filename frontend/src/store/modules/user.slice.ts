@@ -1,14 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../index';
 
 const { reducer: userReducer, actions } = createSlice({
   name: 'user',
-  initialState: { token: '' },
+  initialState: { isCookiesConsentApproved: false },
   reducers: {
-    setToken(state, action: PayloadAction<string>) {
-      state.token = action.payload;
+    setCookieConsent(state, action: PayloadAction<boolean>) {
+      state.isCookiesConsentApproved = action.payload;
     },
   },
 });
 
-export const { setToken } = actions;
+export const getStoredCookieConsent = (state: RootState) =>
+  state.user.isCookiesConsentApproved;
+export const { setCookieConsent } = actions;
 export default userReducer;
