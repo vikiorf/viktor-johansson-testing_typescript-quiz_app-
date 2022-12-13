@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import InputComponent from '../src/components/common/InputComponent';
 
-describe('Tests Modal Component', function () {
+describe('Tests Input Component', function () {
   let valueFromInputComponent: string | null;
   const handleFunction = (emittedValue: string) => {
     valueFromInputComponent = emittedValue;
