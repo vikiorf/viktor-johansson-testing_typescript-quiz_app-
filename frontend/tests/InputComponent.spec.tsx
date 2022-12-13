@@ -52,4 +52,21 @@ describe('Tests Input Component', function () {
     expect(inputElement).toBeTruthy;
     expect(inputElement.value).toEqual('Initial value');
   });
+
+  it('verifies label is displayed if errorLabel is set.', function () {
+    render(
+      <InputComponent
+        onInputChange={handleFunction}
+        initialValue="Initial value"
+        errorLabel="Test Error"
+      />,
+    );
+
+    const inputElement = screen.getByTestId('input-element') as HTMLInputElement;
+    const errorLabelElement = screen.getByTestId('error-label-element');
+
+    expect(inputElement).toBeTruthy;
+    expect(inputElement.value).toEqual('Initial value');
+    expect(errorLabelElement.textContent).toEqual('Test Error');
+  });
 });

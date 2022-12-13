@@ -4,6 +4,7 @@ type IInputComponent = {
   inputType?: string;
   placeholder?: string;
   initialValue?: string;
+  errorLabel?: string;
   onInputChange: (valueToEmit: string) => void;
 };
 
@@ -26,14 +27,26 @@ const InputComponent = (props: IInputComponent) => {
   };
 
   return (
-    <input
-      className="bg-input-bg placeholder-placeholder-color pl-1 h-10 rounded text-primary-color"
-      type={inputType}
-      data-testid="input-element"
-      placeholder={props.placeholder}
-      value={inputValue}
-      onChange={changeHandler}
-    />
+    <>
+      <input
+        id="input-element"
+        className="bg-input-bg placeholder-placeholder-color pl-1 h-10 rounded text-primary-color mb-1"
+        type={inputType}
+        data-testid="input-element"
+        placeholder={props.placeholder}
+        value={inputValue}
+        onChange={changeHandler}
+      />
+      {props.errorLabel && (
+        <label
+          data-testid="error-label-element"
+          className="text-error-color mb-1"
+          htmlFor="input-element"
+        >
+          {props.errorLabel}
+        </label>
+      )}
+    </>
   );
 };
 
