@@ -1,12 +1,7 @@
 import { FC, useState, FormEvent } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
-import {
-  getStoredCookieConsent,
-  getStoredUserName,
-  setCookieConsent,
-  setUserName,
-} from '@/store/modules/user.slice';
+import { getStoredUserName, setUserName } from '@/store/modules/user.slice';
 
 import ButtonComponent from '../common/ButtonComponent';
 import ModalComponent from '../common/ModalComponent';
@@ -16,6 +11,7 @@ type INameInputComponent = {};
 
 const NameInputComponent: FC<INameInputComponent> = () => {
   const [name, setName] = useState('');
+  const [nameInputErrorLabel, setNameInputErrorLabel] = useState('');
 
   const isUserNameEntered = !!useAppSelector(getStoredUserName);
   const dispatch = useAppDispatch();
@@ -28,10 +24,8 @@ const NameInputComponent: FC<INameInputComponent> = () => {
   const confirmUserNameHandler = (formSubmitEvent: FormEvent<HTMLFormElement>) => {
     formSubmitEvent.preventDefault();
     const isValid = validateNameInput();
-    if (!isValid) {
-      // Display error message
-      return;
-    }
+    if (!isValid) return setNameInputErrorLabel('Name is required');
+
     dispatch(setUserName(name));
   };
 
@@ -43,11 +37,12 @@ const NameInputComponent: FC<INameInputComponent> = () => {
       <ModalComponent>
         <form
           data-testid="form-element"
-          className="w-full h-full grid gap-2"
+          className="w-full h-full flex flex-col"
           onSubmit={confirmUserNameHandler}
         >
           <p>Enter your name below:</p>
           <InputComponent
+            errorLabel={nameInputErrorLabel}
             placeholder="Name"
             onInputChange={newValue => setName(newValue)}
           />

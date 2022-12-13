@@ -38,4 +38,23 @@ describe('Tests Name Input Component', function () {
     const hiddenElement = screen.getByTestId('hidden-element');
     expect(hiddenElement.textContent).toEqual('Stored');
   });
+
+  it('verifies error label is shown when submitting without name.', function () {
+    renderWithProviders(<NameInputComponent />, {
+      preloadedState: { user: { name: '', isCookiesConsentApproved: false } },
+    });
+
+    const formElement = screen.getByTestId('form-element');
+    const acceptButtonElement = formElement.querySelector(
+      'input[type="submit"]',
+    ) as HTMLInputElement;
+
+    fireEvent.click(acceptButtonElement);
+
+    const errorLabelElement = screen.getByTestId('error-label-element');
+
+    const hiddenElement = screen.getByTestId('hidden-element');
+    expect(hiddenElement.textContent).toEqual('Not stored');
+    expect(errorLabelElement.textContent).toEqual('Name is required');
+  });
 });
