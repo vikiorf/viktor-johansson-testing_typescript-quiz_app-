@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, PreloadedState } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 import {
   FLUSH,
@@ -12,24 +12,35 @@ import {
 
 import persistedReducer from '@/store/persist';
 
-export const store = configureStore({
-  devTools: import.meta.env.DEV,
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => {
-    let mdw = getDefaultMiddleware({
-      /*@see https://redux-toolkit.js.org/usage/usage-guide#use-with-redux-persist*/
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    });
-    if (import.meta.env.DEV) {
-      mdw = mdw.concat(logger);
-    }
-    return mdw;
-  },
-});
+// import.meta.env.DEV === 1 when running unit tests, therefore this check.
+const devEnvMetaVariable = import.meta.env.DEV;
+const IS_DEV_ENV = typeof devEnvMetaVariable === 'boolean' && devEnvMetaVariable;
+
+export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
+  return configureStore({
+    devTools: import.meta.env.DEV,
+    reducer: persistedReducer,
+    preloadedState,
+    middleware: getDefaultMiddleware => {
+      let mdw = getDefaultMiddleware({
+        /*@see https://redux-toolkit.js.org/usage/usage-guide#use-with-redux-persist*/
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+      });
+
+      if (IS_DEV_ENV) {
+        return mdw.concat(logger);
+      }
+      return mdw;
+    },
+  });
+};
+
+export const store = setupStore();
 export const persistor = persistStore(store);
+
 // Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof persistedReducer>;
+export type AppStore = ReturnType<typeof setupStore>;
+export type AppDispatch = AppStore['dispatch'];

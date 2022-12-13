@@ -15,7 +15,7 @@ type IInputComponent = {
 const ButtonComponent: FC<IInputComponent> = props => {
   const [buttonType, setButtonType] = useState('button');
   const [className, setClassName] = useState(
-    'placeholder-placeholder-color pl-1 h-10 rounded w-24 ',
+    'placeholder-placeholder-color pl-1 h-10 rounded w-24 hover:cursor-pointer justify-self-center ',
   );
 
   useEffect(() => {
