@@ -12,7 +12,7 @@ describe('Tests Modal Component', function () {
   });
 
   it('verifies input component renders as type text by default.', function () {
-    render(<InputComponent onChange={handleFunction} />);
+    render(<InputComponent onInputChange={handleFunction} />);
 
     const inputElement = screen.getByTestId('input-element');
     const inputElementType = inputElement.getAttribute('type');
@@ -22,7 +22,7 @@ describe('Tests Modal Component', function () {
   });
 
   it('verifies input component renders as type number.', function () {
-    render(<InputComponent onChange={handleFunction} type="number" />);
+    render(<InputComponent onInputChange={handleFunction} inputType="number" />);
 
     const inputElement = screen.getByTestId('input-element');
     const inputElementType = inputElement.getAttribute('type');
@@ -31,8 +31,8 @@ describe('Tests Modal Component', function () {
     expect(inputElementType).toEqual('number');
   });
 
-  it('verifies modal component content renders with element inside.', function () {
-    render(<InputComponent onChange={handleFunction} />);
+  it('verifies input component emits inputted value.', function () {
+    render(<InputComponent onInputChange={handleFunction} />);
 
     const inputElement = screen.getByTestId('input-element') as HTMLInputElement;
     fireEvent.change(inputElement, { target: { value: 'Change' } });
@@ -40,5 +40,16 @@ describe('Tests Modal Component', function () {
     expect(inputElement).toBeTruthy;
     expect(inputElement.value).toEqual('Change');
     expect(valueFromInputComponent).toEqual('Change');
+  });
+
+  it('verifies input component is rendered with initial value.', function () {
+    render(
+      <InputComponent onInputChange={handleFunction} initialValue="Initial value" />,
+    );
+
+    const inputElement = screen.getByTestId('input-element') as HTMLInputElement;
+
+    expect(inputElement).toBeTruthy;
+    expect(inputElement.value).toEqual('Initial value');
   });
 });
