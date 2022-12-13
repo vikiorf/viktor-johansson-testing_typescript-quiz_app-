@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import ButtonComponent from '../src/components/common/ButtonComponent';
+import ButtonComponent, {
+  ButtonStyleEnum,
+} from '../src/components/common/ButtonComponent';
 
 describe('Tests Button Component', function () {
   let isButtonPressEmitted: boolean;
@@ -11,14 +13,47 @@ describe('Tests Button Component', function () {
     isButtonPressEmitted = false;
   });
 
-  it('verifies button component renders as type button by default.', function () {
+  it('verifies button component renders as type button by default with primary class.', function () {
     render(<ButtonComponent label="Button" onClick={handleFunction} />);
 
-    const inputElement = screen.getByTestId('button-element');
-    const inputElementType = inputElement.getAttribute('type');
+    const buttonElement = screen.getByTestId('button-element');
+    const inputElementType = buttonElement.getAttribute('type');
 
-    expect(inputElement).toBeTruthy;
+    expect(buttonElement.getAttribute('class')).toContain('primary-button-bg');
+
+    expect(buttonElement).toBeTruthy;
     expect(inputElementType).toEqual('button');
+  });
+
+  it('verifies button component renders as type button by default with secondary class.', function () {
+    render(
+      <ButtonComponent
+        label="Button"
+        onClick={handleFunction}
+        buttonStyle={ButtonStyleEnum.SECONDARY}
+      />,
+    );
+
+    const buttonElement = screen.getByTestId('button-element') as HTMLInputElement;
+    const inputElementType = buttonElement.getAttribute('type');
+
+    expect(buttonElement.getAttribute('class')).toContain('secondary-button-bg');
+
+    expect(buttonElement).toBeTruthy;
+    expect(inputElementType).toEqual('button');
+  });
+
+  it('verfifies button label is rendered', function () {
+    render(
+      <ButtonComponent
+        label="Button"
+        onClick={handleFunction}
+        buttonStyle={ButtonStyleEnum.SECONDARY}
+      />,
+    );
+
+    const buttonElement = screen.getByTestId('button-element') as HTMLInputElement;
+    expect(buttonElement.value).toEqual('Button');
   });
 
   it('verifies button component renders as type submit if prompted.', function () {
@@ -26,10 +61,10 @@ describe('Tests Button Component', function () {
       <ButtonComponent label="Button" onClick={handleFunction} buttonType="submit" />,
     );
 
-    const inputElement = screen.getByTestId('button-element');
-    const inputElementType = inputElement.getAttribute('type');
+    const buttonElement = screen.getByTestId('button-element');
+    const inputElementType = buttonElement.getAttribute('type');
 
-    expect(inputElement).toBeTruthy;
+    expect(buttonElement).toBeTruthy;
     expect(inputElementType).toEqual('submit');
   });
 
@@ -38,10 +73,10 @@ describe('Tests Button Component', function () {
       <ButtonComponent label="Button" onClick={handleFunction} buttonType="submit" />,
     );
 
-    const inputElement = screen.getByTestId('button-element');
-    fireEvent.click(inputElement);
+    const buttonElement = screen.getByTestId('button-element');
+    fireEvent.click(buttonElement);
 
-    expect(inputElement).toBeTruthy;
+    expect(buttonElement).toBeTruthy;
     expect(isButtonPressEmitted).toBe(true);
   });
 });
