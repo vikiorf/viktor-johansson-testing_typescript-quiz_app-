@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import ButtonComponent, {
   ButtonStyleEnum,
-} from '../src/components/common/ButtonComponent';
+} from '@/components/common/ButtonComponent';
 
 describe('Tests Button Component', function () {
   let isButtonPressEmitted: boolean;

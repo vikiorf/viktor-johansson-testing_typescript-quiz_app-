@@ -1,6 +1,6 @@
 import { fireEvent, screen } from '@testing-library/react';
 
-import { renderWithProviders } from './utils/test-utils';
+import { renderWithProviders } from '../utils/test-utils';
 
 import CookiePromptComponent from '@/components/Specific/CookiePromptComponent';
 

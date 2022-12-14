@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import ListComponent, { GapSizeEnum } from '../src/components/common/ListComponent';
+import ListComponent, { GapSizeEnum } from '@/components/common/ListComponent';
 
 const gapSizeSmall = 'gap-4';
 const gapSizeMedium = 'gap-8';

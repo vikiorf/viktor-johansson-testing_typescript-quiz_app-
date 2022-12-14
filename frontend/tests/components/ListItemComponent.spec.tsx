@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { MemoryRouter } from 'react-router-dom';
 
-import ListItemComponent from '../src/components/common/ListItemComponent';
+import ListItemComponent from '@/components/common/ListItemComponent';
 
 describe('Tests ListItemComponent', function () {
   it('verifies list item component renders with text.', function () {
