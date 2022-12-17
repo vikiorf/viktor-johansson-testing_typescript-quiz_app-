@@ -11,6 +11,8 @@ import { Provider } from 'react-redux';
 import { setupStore } from '../../src/store/index';
 import type { AppStore, RootState } from '../../src/store/index';
 
+import { BrowserRouter } from 'react-router-dom';
+
 // This type interface extends the default options for render from RTL, as well
 // as allows the user to specify other things such as initialState, store.
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
@@ -22,7 +24,7 @@ export function renderWithProviders(
   ui: React.ReactElement,
   {
     preloadedState = {
-      user: { isCookiesConsentApproved: true },
+      user: { isCookiesConsentApproved: true, name: 'Test' },
     },
     // Automatically create a store instance if no store was passed in
     store = setupStore(preloadedState),
@@ -30,7 +32,15 @@ export function renderWithProviders(
   }: ExtendedRenderOptions = {},
 ) {
   function Wrapper({ children }: PropsWithChildren<{}>): JSX.Element {
-    return <Provider store={store}>{children}</Provider>;
+    return (
+      <BrowserRouter>
+        <Provider store={store}>{children}</Provider>
+      </BrowserRouter>
+    );
   }
   return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 }
+
+export const setTimeOut = (time: number) => {
+  return new Promise(resolve => setTimeout(resolve, time));
+};
