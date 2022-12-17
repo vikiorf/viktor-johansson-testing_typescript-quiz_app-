@@ -8,7 +8,7 @@ export enum DifficultyEnum {
   RANDOM = '🎲 Random',
 }
 
-enum Language {
+export enum LanguageEnum {
   EN = 'en',
   SE = 'se',
 }
@@ -20,7 +20,7 @@ const { reducer: userReducer, actions } = createSlice({
     setDifficulty(state, action: PayloadAction<DifficultyEnum>) {
       state.difficulty = action.payload;
     },
-    setLanguage(state, action: PayloadAction<Language>) {
+    setLanguage(state, action: PayloadAction<LanguageEnum>) {
       state.language = action.payload;
     },
   },

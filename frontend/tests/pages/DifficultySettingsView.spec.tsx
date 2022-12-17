@@ -47,7 +47,6 @@ describe('Tests DifficultySettingView', function () {
     const hardLinkElement = screen.getByTestId('HARD');
 
     expect(hardLinkElement).toBeTruthy;
-    expect(hardLinkElement).toBeFalsy;
     expect(hardLinkElement.textContent).toEqual('👷‍♀️ Hard');
 
     await act(async () => {
@@ -64,7 +63,6 @@ describe('Tests DifficultySettingView', function () {
     const randomLinkElement = screen.getByTestId('RANDOM');
 
     expect(randomLinkElement).toBeTruthy;
-    expect(randomLinkElement).toBeFalsy;
     expect(randomLinkElement.textContent).toEqual('🎲 Random');
 
     await act(async () => {
