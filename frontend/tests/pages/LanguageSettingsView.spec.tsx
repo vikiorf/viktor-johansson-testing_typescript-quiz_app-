@@ -53,7 +53,7 @@ describe('Tests LanguageSettingView', function () {
       await setTimeOut(501);
     });
 
-    expect(window.location.pathname).toEqual('/');
+    expect(swedishListItemElement.textContent).toContain('✅');
   });
 
   it('verifies checkmark is displayed when english language is clicked', async function () {

@@ -24,7 +24,7 @@ const LanguageSettingView: FC<ILanguageSettingView> = () => {
     if (elementId && Object.values(LanguageEnum).includes(elementId)) {
       dispatch(setLanguage(elementId as LanguageEnum));
       setTimeout(() => {
-        navigate('/');
+        navigate('/ready');
       }, 500);
     }
   };
