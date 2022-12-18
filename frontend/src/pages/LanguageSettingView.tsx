@@ -9,7 +9,7 @@ import {
   getStoredLanguage,
   LanguageEnum,
   setLanguage,
-} from '@/store/modules/gameSettings.slice';
+} from '@/store/modules/game.slice';
 import { useNavigate } from 'react-router';
 
 type ILanguageSettingView = {};
