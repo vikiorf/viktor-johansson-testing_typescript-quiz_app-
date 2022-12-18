@@ -7,13 +7,14 @@ export enum ButtonStyleEnum {
 
 export enum ButtonSizeEnum {
   MEDIUM = 'w-24 h-10',
-  LARGE = 'w-36 h-14 text-xl',
+  LARGE = 'w-40 h-14 text-xl',
 }
 
 type IInputComponent = {
   buttonType?: 'button' | 'submit';
   buttonSize?: ButtonSizeEnum;
   buttonStyle?: ButtonStyleEnum;
+  overrideTestId?: string;
   label: string;
   onClick?: () => void;
   extendCssClass?: string;
@@ -52,7 +53,7 @@ const ButtonComponent: FC<IInputComponent> = props => {
     <input
       className={className}
       type={buttonType}
-      data-testid="button-element"
+      data-testid={props.overrideTestId || 'button-element'}
       value={props.label}
       onClick={clickHandler}
     />
