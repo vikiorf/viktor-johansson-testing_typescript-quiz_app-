@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import ButtonComponent, {
+  ButtonSizeEnum,
   ButtonStyleEnum,
-} from '../src/components/common/ButtonComponent';
+} from '@/components/common/ButtonComponent';
 
 describe('Tests Button Component', function () {
   let isButtonPressEmitted: boolean;
@@ -43,7 +44,7 @@ describe('Tests Button Component', function () {
     expect(inputElementType).toEqual('button');
   });
 
-  it('verfifies button label is rendered', function () {
+  it('verifies button label is rendered', function () {
     render(
       <ButtonComponent
         label="Button"
@@ -78,5 +79,19 @@ describe('Tests Button Component', function () {
 
     expect(buttonElement).toBeTruthy;
     expect(isButtonPressEmitted).toBe(true);
+  });
+
+  it('verifies button component renders with large size', function () {
+    render(
+      <ButtonComponent
+        label="Button"
+        onClick={handleFunction}
+        buttonType="submit"
+        buttonSize={ButtonSizeEnum.LARGE}
+      />,
+    );
+
+    const buttonElement = screen.getByTestId('button-element');
+    expect(buttonElement.getAttribute('class')).toContain('h-14');
   });
 });

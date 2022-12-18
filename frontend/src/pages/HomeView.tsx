@@ -25,7 +25,7 @@ const HomeView: FC<IHomeView> = () => {
         Welcome {storedUserName}
       </h1>
       <ListComponent gapSize={GapSizeEnum.MEDIUM}>
-        <ListItemComponent>🙍‍♀️ Play alone</ListItemComponent>
+        <ListItemComponent linkUrl="/difficulty-setup">🙍‍♀️ Play alone</ListItemComponent>
         <ListItemComponent>💃 Play with other people</ListItemComponent>
       </ListComponent>
       {!isUserNameEntered && <NameInputComponent />}

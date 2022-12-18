@@ -1,18 +1,37 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
 
 type IListItemComponent = {
   linkUrl?: string;
+  callBack?: (...args: any[]) => any;
+  id?: string;
+  overrideTestId?: string;
 };
 
-const ListItemComponent: FC<IListItemComponent> = (props) => {
+const ListItemComponent: FC<IListItemComponent> = props => {
+  const clickHandler = () => {
+    if (props.callBack) props.callBack(props.id);
+  };
+
   if (props.linkUrl)
     return (
-      <Link data-testid="list-item-element" to={props.linkUrl}>
+      <Link
+        id={props.id}
+        data-testid={props.overrideTestId ? props.overrideTestId : 'list-item-element'}
+        to={props.linkUrl}
+      >
         {props.children}
       </Link>
     );
-  return <li data-testid="list-item-element">{props.children}</li>;
+  return (
+    <li
+      id={props.id}
+      data-testid={props.overrideTestId ? props.overrideTestId : 'list-item-element'}
+      onClick={clickHandler}
+    >
+      {props.children}
+    </li>
+  );
 };
 
 export default ListItemComponent;

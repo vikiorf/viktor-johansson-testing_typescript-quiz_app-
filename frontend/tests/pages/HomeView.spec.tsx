@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 
-import HomeView from '../src/pages/HomeView';
-import { renderWithProviders } from './utils/test-utils';
+import HomeView from '@/pages/HomeView';
+import { renderWithProviders } from '../utils/test-utils';
 
 describe('Tests HomeView', function () {
   it('verifies welcome text in HomeView is rendered', function () {

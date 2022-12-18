@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import ModalComponent from '../src/components/common/ModalComponent';
+import ModalComponent from '@/components/common/ModalComponent';
 
 describe('Tests Modal Component', function () {
   beforeAll(() => {});
