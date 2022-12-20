@@ -10,6 +10,7 @@ interface IAnswer {
 type IAnswersComponent = {
   answers: IAnswer[];
   isRoundDone: boolean;
+  setSelectedAnswer: (answersArrayIndex: number) => void;
 };
 
 const AnswersComponent: FC<IAnswersComponent> = props => {
@@ -20,7 +21,10 @@ const AnswersComponent: FC<IAnswersComponent> = props => {
     const tempAnswers = [...mappedAnswers];
     tempAnswers.forEach((answer, index) => {
       if (index !== answerIndex) answer.isSelectedAnswer = false;
-      if (index === answerIndex) answer.isSelectedAnswer = true;
+      if (index === answerIndex) {
+        answer.isSelectedAnswer = true;
+        props.setSelectedAnswer(index);
+      }
     });
     setMappedAnswers(tempAnswers);
   };
