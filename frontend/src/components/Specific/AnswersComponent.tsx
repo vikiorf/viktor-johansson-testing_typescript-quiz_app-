@@ -51,7 +51,7 @@ const AnswersComponent: FC<IAnswersComponent> = props => {
       ? mapAnswersWhenRoundIsDone()
       : mapAnswersWhenRoundIsNotDone();
     setMappedAnswers(mappedAnswers);
-  }, [props.isRoundDone]);
+  }, [props.isRoundDone, props.answers]);
 
   return (
     <div

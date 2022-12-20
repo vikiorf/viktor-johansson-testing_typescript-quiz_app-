@@ -3,15 +3,19 @@ import { FC, useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 
-import { getStoredCookieConsent, getStoredUserName } from '@/store/modules/user.slice';
+import { getStoredCookieConsent } from '@/store/modules/user.slice';
 import QuestionComponent from '@/components/Specific/QuestionComponent';
 import QuestionHeaderComponent from '@/components/Specific/QuestionHeaderComponent';
 import ProgressComponent from '@/components/Specific/ProgressComponent';
 import { getStoredDifficulty } from '@/store/modules/game.slice';
 import { getStoredIsPlaying, setRound } from '@/store/modules/game.slice';
 import { useNavigate } from 'react-router';
+import AnswersComponent from '@/components/Specific/AnswersComponent';
 
 type IGameView = {};
+
+const questionTime = 6000;
+const rounds = 12;
 
 interface ITriviaCategories {
   'Arts & Literature': ['arts', 'literature', 'arts_and_literature'];
@@ -31,7 +35,7 @@ interface ITriviaQuestion {
   correctAnswer: string;
   difficulty: 'easy' | 'medium' | 'hard';
   id: string;
-  incorrectAnswers: string[3];
+  incorrectAnswers: string[];
   isNiche: boolean;
   question: string;
   regions: string[];
@@ -40,13 +44,17 @@ interface ITriviaQuestion {
 }
 
 const GameView: FC<IGameView> = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const isCookiesConsentApproved = useAppSelector(getStoredCookieConsent);
   const isPlaying = useAppSelector(getStoredIsPlaying);
   const storedDifficulty = useAppSelector(getStoredDifficulty);
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const [progress, setProgress] = useState(0);
 
+  const [progress, setProgress] = useState(0);
+  const [answers, setAnswers] = useState<any[]>([]);
+  const [roundNumber, setRoundNumber] = useState(0);
+  const [isRoundDone, setIsRoundDone] = useState(false);
   const [questions, setQuestions] = useState<ITriviaQuestion[]>([]);
 
   let interval: NodeJS.Timeout;
@@ -56,41 +64,71 @@ const GameView: FC<IGameView> = () => {
       `https://the-trivia-api.com/api/questions?limit=1&difficulty=${storedDifficulty.toLowerCase()}`,
     );
 
-    return response.data;
+    return response.data as ITriviaQuestion[];
   };
 
   const getPercentage = (value: number, total: number) => {
     return (value / total) * 100;
   };
 
-  const answerQuestionTimer = () => {
-    let i = 0;
-    interval = setInterval(() => {
-      i += 100;
-      setProgress(i);
-      if (i >= 3000) return clearInterval(interval);
-    }, 100);
+  const endRound = () => {
+    return new Promise(resolve => {
+      clearInterval(interval);
+      setIsRoundDone(true);
+      setTimeout(() => {
+        resolve(true);
+      }, 3000);
+    });
   };
 
   const readQuestionTimer = () => {
-    let i = 0;
-    interval = setInterval(() => {
-      i += 100;
-      setProgress(i);
-      if (i >= 3000) return clearInterval(interval);
-    }, 100);
+    return new Promise(resolve => {
+      let i = 0;
+      interval = setInterval(() => {
+        i += 100;
+        setProgress(i);
+        if (i >= questionTime) {
+          return resolve(true);
+        }
+      }, 100);
+    });
   };
 
-  const beginRound = async (roundNumber: number) => {
+  const beginRound = async () => {
+    setIsRoundDone(false);
     const questions = await fetchQuestionsFromAPI();
-    dispatch(setRound(1));
+    const answers = [];
+    questions[0].incorrectAnswers.forEach(answer => {
+      answers.push({ answer, isSelectedAnswer: false, isCorrectAnswer: false });
+    });
+    answers.push({
+      answer: questions[0].correctAnswer,
+      isSelectedAnswer: false,
+      isCorrectAnswer: true,
+    });
+
+    let newRoundNumber;
+
+    setRoundNumber(oldRoundNumber => {
+      newRoundNumber = oldRoundNumber + 1;
+      dispatch(setRound(newRoundNumber));
+      return newRoundNumber;
+    });
+    setAnswers(answers);
     setQuestions(questions);
-    readQuestionTimer();
+    return newRoundNumber;
   };
 
   const initQuiz = async () => {
     if (!isCookiesConsentApproved || !isPlaying) return navigate('/');
-    beginRound(1);
+    for (let i = 0; i < rounds; i++) {
+      await beginRound();
+
+      await readQuestionTimer();
+      await endRound();
+    }
+
+    navigate('/results');
   };
 
   useEffect(() => {
@@ -98,12 +136,13 @@ const GameView: FC<IGameView> = () => {
   }, []);
 
   return (
-    <div className="wrapper h-screen w-screen px-10 p-2 bg-primary-bg text-primary-color grid grid-rows-[0.3fr,1fr,0.2fr]">
-      <QuestionHeaderComponent questionNumber={1} />
+    <div className="wrapper h-screen w-screen px-10 p-2 bg-primary-bg text-primary-color grid grid-rows-[0.3fr,0.4fr,1fr,0.2fr]">
+      <QuestionHeaderComponent questionNumber={roundNumber} />
       <QuestionComponent
         question={questions && questions.length > 0 ? questions[0].question : ''}
       />
-      <ProgressComponent status={getPercentage(progress, 3000)} />
+      <AnswersComponent answers={answers} isRoundDone={isRoundDone} />
+      <ProgressComponent status={getPercentage(progress, questionTime)} />
     </div>
   );
 };

@@ -28,7 +28,7 @@ describe('Tests GameView', function () {
 
     expect(progressElement).toBeTruthy;
     expect(progressBarElement).toBeTruthy;
-    expect(progressBarElement.style.width).toEqual('80%');
+    expect(progressBarElement.style.width).toEqual('0%');
     expect(progressElement.textContent).toBeTruthy;
   });
 });

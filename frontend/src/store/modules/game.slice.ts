@@ -18,7 +18,7 @@ const { reducer: gameReducer, actions } = createSlice({
   initialState: {
     difficulty: '',
     language: '',
-    round: 0,
+    roundNumber: 0,
     question: '',
     isPlaying: false,
     rounds: [],
@@ -28,7 +28,7 @@ const { reducer: gameReducer, actions } = createSlice({
       state.isPlaying = action.payload;
     },
     setRound(state, action: PayloadAction<number>) {
-      state.round = action.payload;
+      state.roundNumber = action.payload;
     },
     setDifficulty(state, action: PayloadAction<DifficultyEnum>) {
       state.difficulty = action.payload;
@@ -44,7 +44,7 @@ export const getStoredLanguage = (state: RootState) => state.game.language;
 
 export const getStoredIsPlaying = (state: RootState) => state.game.isPlaying;
 export const getCurrentRound = (state: RootState) =>
-  state.game.rounds[state.game.round - 1];
+  state.game.rounds[state.game.roundNumber - 1];
 
 export const { setDifficulty } = actions;
 export const { setLanguage } = actions;
