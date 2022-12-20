@@ -16,6 +16,7 @@ const AnswersComponent: FC<IAnswersComponent> = props => {
   const [mappedAnswers, setMappedAnswers] = useState<IAnswer[]>([]);
 
   const setSelectedAnswerUnsetAllOtherAnswers = (answerIndex: number) => {
+    if (props.isRoundDone) return;
     const tempAnswers = [...mappedAnswers];
     tempAnswers.forEach((answer, index) => {
       if (index !== answerIndex) answer.isSelectedAnswer = false;
@@ -35,12 +36,12 @@ const AnswersComponent: FC<IAnswersComponent> = props => {
   };
 
   const mapAnswersWhenRoundIsDone = (): IAnswer[] => {
-    const tempAnswers = [...props.answers];
+    const tempAnswers = [...mappedAnswers];
 
-    return tempAnswers.map(answer => {
+    return tempAnswers.map((answer, index) => {
       return {
         answer: answer.answer,
-        isCorrectAnswer: answer.isCorrectAnswer,
+        isCorrectAnswer: props.answers[index].isCorrectAnswer,
         isSelectedAnswer: answer.isSelectedAnswer,
       };
     });
