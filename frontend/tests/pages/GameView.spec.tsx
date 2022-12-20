@@ -10,7 +10,7 @@ describe('Tests GameView', function () {
     const questionHeaderElement = screen.getByTestId('question-header-element');
 
     expect(questionHeaderElement).toBeTruthy;
-    expect(questionHeaderElement.textContent).toContain('of 12');
+    expect(questionHeaderElement.textContent).toContain('of 9');
   });
 
   it('verifies question is displayed when GameView is rendered', function () {
