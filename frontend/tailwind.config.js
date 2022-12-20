@@ -16,6 +16,7 @@ module.exports = {
         'secondary-button-bg': '#5A4B38',
         'placeholder-color': '#C8C8C8',
         'error-color': '#FF1818',
+        'success-color': '#00FF00',
       },
     },
   },
