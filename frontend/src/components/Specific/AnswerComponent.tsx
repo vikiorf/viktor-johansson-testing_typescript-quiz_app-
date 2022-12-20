@@ -14,9 +14,9 @@ const AnswerComponent: FC<IAnswerComponent> = props => {
   const [className, setClassName] = useState<string>(defaultClassName);
 
   const getBackGroundColor = () => {
-    let answerBgColor = 'bg-primary-button-bg text-primary-bg';
+    let answerBgColor = 'bg-secondary-bg text-primary-color';
     if (props.isSelectedAnswer) {
-      answerBgColor = 'bg-secondary-bg text-primary-color';
+      answerBgColor = 'bg-primary-button-bg text-primary-bg';
     }
     return answerBgColor;
   };
@@ -24,7 +24,7 @@ const AnswerComponent: FC<IAnswerComponent> = props => {
   const getBorderColor = () => {
     let answerBorderColor = 'border-none';
 
-    if (typeof props.isCorrectAnswer === 'undefined') return answerBorderColor;
+    if (typeof props.isCorrectAnswer !== 'boolean') return answerBorderColor;
 
     if (props.isCorrectAnswer) {
       answerBorderColor = 'border-2 border-success-color shadow-md shadow-success-color';

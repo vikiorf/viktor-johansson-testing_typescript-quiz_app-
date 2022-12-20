@@ -4,8 +4,8 @@ import AnswerComponent from '@/components/Specific/AnswerComponent';
 
 describe('Tests Answer Component', function () {
   let isElementClicked: boolean;
-  const nonSelectedAnswerBackGroundColorClass = 'primary-button-bg';
-  const selectedAnswerBackGroundColorClass = 'bg-secondary-bg';
+  const nonSelectedAnswerBackGroundColorClass = 'bg-secondary-bg';
+  const selectedAnswerBackGroundColorClass = 'primary-button-bg';
   const noBorderClass = 'border-none';
   const successBorderClass = 'border-success';
   const errorBorderClass = 'border-error-color';
