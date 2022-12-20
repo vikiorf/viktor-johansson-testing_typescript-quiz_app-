@@ -1,25 +1,27 @@
 import { FC, useEffect, useState } from 'react';
-import AnswerComponent from './AnswerComponent';
 
-interface IAnswer {
-  answer: string;
-  isCorrectAnswer?: boolean;
-  isSelectedAnswer: boolean;
-}
+import { IAnswer } from '@/pages/GameView';
+
+import AnswerComponent from './AnswerComponent';
 
 type IAnswersComponent = {
   answers: IAnswer[];
   isRoundDone: boolean;
+  setSelectedAnswer: (answersArrayIndex: number) => void;
 };
 
 const AnswersComponent: FC<IAnswersComponent> = props => {
   const [mappedAnswers, setMappedAnswers] = useState<IAnswer[]>([]);
 
   const setSelectedAnswerUnsetAllOtherAnswers = (answerIndex: number) => {
+    if (props.isRoundDone) return;
     const tempAnswers = [...mappedAnswers];
     tempAnswers.forEach((answer, index) => {
       if (index !== answerIndex) answer.isSelectedAnswer = false;
-      if (index === answerIndex) answer.isSelectedAnswer = true;
+      if (index === answerIndex) {
+        answer.isSelectedAnswer = true;
+        props.setSelectedAnswer(index);
+      }
     });
     setMappedAnswers(tempAnswers);
   };
@@ -35,12 +37,12 @@ const AnswersComponent: FC<IAnswersComponent> = props => {
   };
 
   const mapAnswersWhenRoundIsDone = (): IAnswer[] => {
-    const tempAnswers = [...props.answers];
+    const tempAnswers = [...mappedAnswers];
 
-    return tempAnswers.map(answer => {
+    return tempAnswers.map((answer, index) => {
       return {
         answer: answer.answer,
-        isCorrectAnswer: answer.isCorrectAnswer,
+        isCorrectAnswer: props.answers[index].isCorrectAnswer,
         isSelectedAnswer: answer.isSelectedAnswer,
       };
     });
@@ -51,7 +53,7 @@ const AnswersComponent: FC<IAnswersComponent> = props => {
       ? mapAnswersWhenRoundIsDone()
       : mapAnswersWhenRoundIsNotDone();
     setMappedAnswers(mappedAnswers);
-  }, [props.isRoundDone]);
+  }, [props.isRoundDone, props.answers]);
 
   return (
     <div

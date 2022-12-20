@@ -13,8 +13,17 @@ describe('Tests Answers Component', function () {
     { answer: 'Answer 3', isSelectedAnswer: false, isCorrectAnswer: false },
     { answer: 'Answer 4', isSelectedAnswer: false, isCorrectAnswer: false },
   ];
+
+  const emptyFunction = () => {};
+
   it('verifies answers component renders with classes correct amount of child elements.', function () {
-    render(<AnswersComponent answers={testData} isRoundDone={false} />);
+    render(
+      <AnswersComponent
+        answers={testData}
+        isRoundDone={false}
+        setSelectedAnswer={emptyFunction}
+      />,
+    );
 
     const answerContainerElement = screen.getByTestId('answer-container-element');
 
@@ -23,7 +32,13 @@ describe('Tests Answers Component', function () {
   });
 
   it('verifies answers component updates classes for answered children.', function () {
-    render(<AnswersComponent answers={testData} isRoundDone={false} />);
+    render(
+      <AnswersComponent
+        answers={testData}
+        isRoundDone={false}
+        setSelectedAnswer={emptyFunction}
+      />,
+    );
 
     const answerContainerElement = screen.getByTestId('answer-container-element');
     const firstAnswerElement = answerContainerElement.children[0];
@@ -42,7 +57,13 @@ describe('Tests Answers Component', function () {
   });
 
   it('verifies answers component does not update classes for unanswered children.', function () {
-    render(<AnswersComponent answers={testData} isRoundDone={false} />);
+    render(
+      <AnswersComponent
+        answers={testData}
+        isRoundDone={false}
+        setSelectedAnswer={emptyFunction}
+      />,
+    );
 
     const answerContainerElement = screen.getByTestId('answer-container-element');
     const firstAnswerElement = answerContainerElement.children[0];
@@ -63,7 +84,13 @@ describe('Tests Answers Component', function () {
   });
 
   it('verifies answers component updates classes for 4 children.', function () {
-    render(<AnswersComponent answers={testData} isRoundDone={false} />);
+    render(
+      <AnswersComponent
+        answers={testData}
+        isRoundDone={false}
+        setSelectedAnswer={emptyFunction}
+      />,
+    );
 
     const answerContainerElement = screen.getByTestId('answer-container-element');
     const firstAnswerElement = answerContainerElement.children[0];

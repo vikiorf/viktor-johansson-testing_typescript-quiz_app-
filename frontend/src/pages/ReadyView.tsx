@@ -5,13 +5,16 @@ import { useAppDispatch } from '@/app/hooks';
 import { useNavigate } from 'react-router';
 import ButtonComponent, { ButtonSizeEnum } from '@/components/common/ButtonComponent';
 import { Link } from 'react-router-dom';
+import { setIsPlaying } from '@/store/modules/game.slice';
 
 type IReadyView = {};
 
 const ReadyView: FC<IReadyView> = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const playButtonHandler = () => {
+    dispatch(setIsPlaying(true));
     navigate('/game');
   };
 

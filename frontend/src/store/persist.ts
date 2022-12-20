@@ -2,12 +2,12 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
+import gameReducer from './modules/game.slice';
 import userReducer from '@/store/modules/user.slice';
-import gameSettingsReducer from '@/store/modules/gameSettings.slice';
 
 const reducers = combineReducers({
   user: userReducer,
-  gameSettings: gameSettingsReducer,
+  game: gameReducer,
 });
 
 const persistConfig = {

@@ -9,7 +9,7 @@ import {
   DifficultyEnum,
   getStoredDifficulty,
   setDifficulty,
-} from '@/store/modules/gameSettings.slice';
+} from '@/store/modules/game.slice';
 import { useNavigate } from 'react-router-dom';
 
 type IDifficultySettingView = {};
