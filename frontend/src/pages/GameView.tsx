@@ -7,15 +7,20 @@ import { getStoredCookieConsent } from '@/store/modules/user.slice';
 import QuestionComponent from '@/components/Specific/QuestionComponent';
 import QuestionHeaderComponent from '@/components/Specific/QuestionHeaderComponent';
 import ProgressComponent from '@/components/Specific/ProgressComponent';
-import { getStoredDifficulty } from '@/store/modules/game.slice';
-import { getStoredIsPlaying, setRound } from '@/store/modules/game.slice';
+import {
+  addRoundInState,
+  clearRoundsInState,
+  getStoredDifficulty,
+  getStoredRounds,
+} from '@/store/modules/game.slice';
+import { getStoredIsPlaying, setRoundInState } from '@/store/modules/game.slice';
 import { useNavigate } from 'react-router';
 import AnswersComponent from '@/components/Specific/AnswersComponent';
 
 type IGameView = {};
 
-const questionTime = 6000;
-const rounds = 12;
+const questionTimeInMs = 30000;
+const rounds = 9;
 
 interface ITriviaCategories {
   'Arts & Literature': ['arts', 'literature', 'arts_and_literature'];
@@ -50,9 +55,11 @@ const GameView: FC<IGameView> = () => {
   const isCookiesConsentApproved = useAppSelector(getStoredCookieConsent);
   const isPlaying = useAppSelector(getStoredIsPlaying);
   const storedDifficulty = useAppSelector(getStoredDifficulty);
+  const storedRounds = useAppSelector(getStoredRounds);
 
   const [gameState, setGameState] = useState<'loading' | 'playing' | 'done'>();
   const [progress, setProgress] = useState(0);
+  // TODO - fix this type
   const [selectedAnswer, setSelectedAnswer] = useState<any>();
   const [answers, setAnswers] = useState<any[]>([]);
   const [roundNumber, setRoundNumber] = useState(0);
@@ -86,7 +93,7 @@ const GameView: FC<IGameView> = () => {
     interval = setInterval(() => {
       i += 100;
       setProgress(i);
-      if (i >= questionTime) {
+      if (i >= questionTimeInMs) {
         clearInterval(interval);
         setGameState('done');
       }
@@ -110,7 +117,7 @@ const GameView: FC<IGameView> = () => {
 
     setRoundNumber(oldRoundNumber => {
       newRoundNumber = oldRoundNumber + 1;
-      dispatch(setRound(newRoundNumber));
+      dispatch(setRoundInState(newRoundNumber));
       return newRoundNumber;
     });
     setAnswers(answers);
@@ -121,23 +128,81 @@ const GameView: FC<IGameView> = () => {
 
   const initQuiz = async () => {
     if (!isCookiesConsentApproved || !isPlaying) return navigate('/');
-    beginRound();
+    setGameState('loading');
+    dispatch(clearRoundsInState());
   };
 
   const setSelectedAnswerFromAnswerComponent = (answersArrayIndex: number) => {
     const answer = answers[answersArrayIndex];
-    setSelectedAnswer({ ...answer });
+    setSelectedAnswer({ ...answer, progress });
+  };
+
+  const calculateBonusScore = () => {
+    let j = 0;
+    for (let i = roundNumber; i >= 0; i--) {
+      const round = i;
+
+      const roundScore = storedRounds[round].answeredCorrectly;
+      if (roundScore === 0) {
+        break;
+      }
+      j++;
+    }
+
+    const allCorrectAnswers = storedRounds.filter(round => round.answeredCorrectly);
+
+    let bonusScore = 0;
+
+    if (j >= 3) {
+      bonusScore = allCorrectAnswers.length * j;
+    }
+    return bonusScore;
+  };
+
+  const calculateScore = () => {
+    const secondsLeft = Math.ceil((questionTimeInMs - selectedAnswer.progress) / 1000);
+
+    const questionDifficulty = questions[0].difficulty;
+
+    let difficulty;
+
+    if (questionDifficulty === 'easy') {
+      difficulty = 1;
+    } else if (questionDifficulty === 'medium') {
+      difficulty = 3;
+    } else {
+      difficulty = 5;
+    }
+
+    const baseScore = secondsLeft * difficulty;
+
+    const bonusScore = calculateBonusScore();
+
+    return baseScore + bonusScore;
+  };
+
+  const saveScore = () => {
+    const selectedAnswerIsCorrect = selectedAnswer && selectedAnswer.isCorrectAnswer;
+    const score = selectedAnswerIsCorrect ? calculateScore() : 0;
+
+    console.log('score', score);
+
+    const scoreObject = {
+      roundNumber,
+      score,
+      answeredCorrectly: selectedAnswerIsCorrect,
+    };
+
+    dispatch(addRoundInState(scoreObject));
   };
 
   const gameHandler = () => {
-    if (gameState === 'loading') {
-      beginRound();
-    } else if (gameState === 'playing') {
-      readQuestionTimer();
-    } else if (gameState === 'done') {
-      endRound();
-      // Calculate score
-    }
+    if (!gameState) return;
+    if (gameState === 'loading') return beginRound();
+    if (gameState === 'playing') return readQuestionTimer();
+
+    saveScore();
+    endRound();
   };
 
   useEffect(() => {
@@ -150,7 +215,10 @@ const GameView: FC<IGameView> = () => {
 
   return (
     <div className="wrapper h-screen w-screen px-10 p-2 bg-primary-bg text-primary-color grid grid-rows-[0.3fr,0.4fr,1fr,0.2fr]">
-      <QuestionHeaderComponent questionNumber={roundNumber} />
+      <QuestionHeaderComponent
+        currentQuestionNumber={roundNumber}
+        totalAmountOfQuestions={rounds}
+      />
       <QuestionComponent
         question={questions && questions.length > 0 ? questions[0].question : ''}
       />
@@ -159,7 +227,7 @@ const GameView: FC<IGameView> = () => {
         isRoundDone={isRoundDone}
         setSelectedAnswer={setSelectedAnswerFromAnswerComponent}
       />
-      <ProgressComponent status={getPercentage(progress, questionTime)} />
+      <ProgressComponent status={getPercentage(progress, questionTimeInMs)} />
     </div>
   );
 };
