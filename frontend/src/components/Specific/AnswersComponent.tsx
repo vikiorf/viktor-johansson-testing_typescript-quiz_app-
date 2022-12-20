@@ -1,11 +1,8 @@
 import { FC, useEffect, useState } from 'react';
-import AnswerComponent from './AnswerComponent';
 
-interface IAnswer {
-  answer: string;
-  isCorrectAnswer?: boolean;
-  isSelectedAnswer: boolean;
-}
+import { IAnswer } from '@/pages/GameView';
+
+import AnswerComponent from './AnswerComponent';
 
 type IAnswersComponent = {
   answers: IAnswer[];

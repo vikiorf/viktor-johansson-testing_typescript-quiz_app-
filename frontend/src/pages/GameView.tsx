@@ -1,26 +1,26 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router';
 import { FC, useEffect, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/app/hooks';
-
-import { getStoredCookieConsent } from '@/store/modules/user.slice';
-import QuestionComponent from '@/components/Specific/QuestionComponent';
-import QuestionHeaderComponent from '@/components/Specific/QuestionHeaderComponent';
-import ProgressComponent from '@/components/Specific/ProgressComponent';
 import {
   addRoundInState,
   clearRoundsInState,
   getStoredDifficulty,
   getStoredRounds,
 } from '@/store/modules/game.slice';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { getStoredIsPlaying, setRoundInState } from '@/store/modules/game.slice';
-import { useNavigate } from 'react-router';
+
+import { getStoredCookieConsent } from '@/store/modules/user.slice';
 import AnswersComponent from '@/components/Specific/AnswersComponent';
+import QuestionComponent from '@/components/Specific/QuestionComponent';
+import ProgressComponent from '@/components/Specific/ProgressComponent';
+import QuestionHeaderComponent from '@/components/Specific/QuestionHeaderComponent';
+
+const rounds = 9;
+const questionTimeInMs = 30000;
 
 type IGameView = {};
-
-const questionTimeInMs = 30000;
-const rounds = 9;
 
 interface ITriviaCategories {
   'Arts & Literature': ['arts', 'literature', 'arts_and_literature'];
@@ -48,23 +48,35 @@ interface ITriviaQuestion {
   type: string;
 }
 
+export interface IAnswer {
+  answer: string;
+  isCorrectAnswer?: boolean;
+  isSelectedAnswer: boolean;
+}
+
+interface IAnsweredQuestion {
+  answer: string;
+  isCorrectAnswer?: boolean;
+  isSelectedAnswer: boolean;
+  progress: number;
+}
+
 const GameView: FC<IGameView> = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const isCookiesConsentApproved = useAppSelector(getStoredCookieConsent);
+  const storedRounds = useAppSelector(getStoredRounds);
   const isPlaying = useAppSelector(getStoredIsPlaying);
   const storedDifficulty = useAppSelector(getStoredDifficulty);
-  const storedRounds = useAppSelector(getStoredRounds);
+  const isCookiesConsentApproved = useAppSelector(getStoredCookieConsent);
 
-  const [gameState, setGameState] = useState<'loading' | 'playing' | 'done'>();
   const [progress, setProgress] = useState(0);
-  // TODO - fix this type
-  const [selectedAnswer, setSelectedAnswer] = useState<any>();
-  const [answers, setAnswers] = useState<any[]>([]);
   const [roundNumber, setRoundNumber] = useState(0);
   const [isRoundDone, setIsRoundDone] = useState(false);
-  const [questions, setQuestions] = useState<ITriviaQuestion[]>([]);
+  const [answers, setAnswers] = useState<IAnswer[]>([]);
+  const [question, setQuestion] = useState<ITriviaQuestion>();
+  const [selectedAnswer, setSelectedAnswer] = useState<IAnsweredQuestion>();
+  const [gameState, setGameState] = useState<'loading' | 'playing' | 'done'>();
 
   let interval: NodeJS.Timeout;
 
@@ -73,7 +85,7 @@ const GameView: FC<IGameView> = () => {
       `https://the-trivia-api.com/api/questions?limit=1&difficulty=${storedDifficulty.toLowerCase()}`,
     );
 
-    return response.data as ITriviaQuestion[];
+    return response.data[0] as ITriviaQuestion;
   };
 
   const getPercentage = (value: number, total: number) => {
@@ -82,8 +94,8 @@ const GameView: FC<IGameView> = () => {
 
   const endRound = () => {
     setIsRoundDone(true);
-    if (roundNumber === rounds) return navigate('/results');
     setTimeout(() => {
+      if (roundNumber === rounds) return navigate('/results');
       setGameState('loading');
     }, 3000);
   };
@@ -100,18 +112,32 @@ const GameView: FC<IGameView> = () => {
     }, 100);
   };
 
+  // Code taken from https://stackoverflow.com/a/12646864/12707006
+  const shuffleArray = (arrayToBeShuffled: unknown[]) => {
+    for (let i = arrayToBeShuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arrayToBeShuffled[i], arrayToBeShuffled[j]] = [
+        arrayToBeShuffled[j],
+        arrayToBeShuffled[i],
+      ];
+    }
+    return arrayToBeShuffled;
+  };
+
   const beginRound = async () => {
     setIsRoundDone(false);
-    const questions = await fetchQuestionsFromAPI();
+    const question = await fetchQuestionsFromAPI();
     const answers = [];
-    questions[0].incorrectAnswers.forEach(answer => {
+    question.incorrectAnswers.forEach(answer => {
       answers.push({ answer, isSelectedAnswer: false, isCorrectAnswer: false });
     });
     answers.push({
-      answer: questions[0].correctAnswer,
-      isSelectedAnswer: false,
       isCorrectAnswer: true,
+      isSelectedAnswer: false,
+      answer: question.correctAnswer,
     });
+
+    const shuffledAnswers = shuffleArray(answers) as IAnswer[];
 
     let newRoundNumber;
 
@@ -120,16 +146,15 @@ const GameView: FC<IGameView> = () => {
       dispatch(setRoundInState(newRoundNumber));
       return newRoundNumber;
     });
-    setAnswers(answers);
-    setQuestions(questions);
+    setAnswers(shuffledAnswers);
+    setQuestion(question);
     setGameState('playing');
-    return newRoundNumber;
   };
 
   const initQuiz = async () => {
     if (!isCookiesConsentApproved || !isPlaying) return navigate('/');
-    setGameState('loading');
     dispatch(clearRoundsInState());
+    setGameState('loading');
   };
 
   const setSelectedAnswerFromAnswerComponent = (answersArrayIndex: number) => {
@@ -138,43 +163,38 @@ const GameView: FC<IGameView> = () => {
   };
 
   const calculateBonusScore = () => {
-    let j = 0;
+    let correctQuestionsInRow = 0;
     for (let i = roundNumber; i >= 0; i--) {
       const round = i;
-
-      const roundScore = storedRounds[round].answeredCorrectly;
-      if (roundScore === 0) {
-        break;
-      }
-      j++;
+      const isAnsweredCorrectly =
+        storedRounds && storedRounds[round] && storedRounds[round].answeredCorrectly > 0;
+      if (isAnsweredCorrectly) break;
+      correctQuestionsInRow++;
     }
 
     const allCorrectAnswers = storedRounds.filter(round => round.answeredCorrectly);
-
     let bonusScore = 0;
-
-    if (j >= 3) {
-      bonusScore = allCorrectAnswers.length * j;
+    if (correctQuestionsInRow >= 3) {
+      bonusScore = allCorrectAnswers.length * correctQuestionsInRow;
     }
     return bonusScore;
   };
 
+  const getDifficultyScore = (difficulty: string) => {
+    if (difficulty === 'easy') return 1;
+    if (difficulty === 'medium') return 3;
+    if (difficulty === 'hard') return 5;
+    return 0;
+  };
+
   const calculateScore = () => {
+    if (!selectedAnswer || !question) return 0;
+
+    const questionDifficulty = question.difficulty;
+    const difficultyScore = getDifficultyScore(questionDifficulty);
+
     const secondsLeft = Math.ceil((questionTimeInMs - selectedAnswer.progress) / 1000);
-
-    const questionDifficulty = questions[0].difficulty;
-
-    let difficulty;
-
-    if (questionDifficulty === 'easy') {
-      difficulty = 1;
-    } else if (questionDifficulty === 'medium') {
-      difficulty = 3;
-    } else {
-      difficulty = 5;
-    }
-
-    const baseScore = secondsLeft * difficulty;
+    const baseScore = secondsLeft * difficultyScore;
 
     const bonusScore = calculateBonusScore();
 
@@ -184,8 +204,6 @@ const GameView: FC<IGameView> = () => {
   const saveScore = () => {
     const selectedAnswerIsCorrect = selectedAnswer && selectedAnswer.isCorrectAnswer;
     const score = selectedAnswerIsCorrect ? calculateScore() : 0;
-
-    console.log('score', score);
 
     const scoreObject = {
       roundNumber,
@@ -219,9 +237,7 @@ const GameView: FC<IGameView> = () => {
         currentQuestionNumber={roundNumber}
         totalAmountOfQuestions={rounds}
       />
-      <QuestionComponent
-        question={questions && questions.length > 0 ? questions[0].question : ''}
-      />
+      <QuestionComponent question={question ? question.question : ''} />
       <AnswersComponent
         answers={answers}
         isRoundDone={isRoundDone}
