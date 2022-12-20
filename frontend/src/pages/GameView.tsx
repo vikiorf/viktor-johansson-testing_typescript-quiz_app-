@@ -51,7 +51,9 @@ const GameView: FC<IGameView> = () => {
   const isPlaying = useAppSelector(getStoredIsPlaying);
   const storedDifficulty = useAppSelector(getStoredDifficulty);
 
+  const [gameState, setGameState] = useState<'loading' | 'playing' | 'done'>();
   const [progress, setProgress] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<any>();
   const [answers, setAnswers] = useState<any[]>([]);
   const [roundNumber, setRoundNumber] = useState(0);
   const [isRoundDone, setIsRoundDone] = useState(false);
@@ -72,26 +74,23 @@ const GameView: FC<IGameView> = () => {
   };
 
   const endRound = () => {
-    return new Promise(resolve => {
-      clearInterval(interval);
-      setIsRoundDone(true);
-      setTimeout(() => {
-        resolve(true);
-      }, 3000);
-    });
+    setIsRoundDone(true);
+    if (roundNumber === rounds) return navigate('/results');
+    setTimeout(() => {
+      setGameState('loading');
+    }, 3000);
   };
 
   const readQuestionTimer = () => {
-    return new Promise(resolve => {
-      let i = 0;
-      interval = setInterval(() => {
-        i += 100;
-        setProgress(i);
-        if (i >= questionTime) {
-          return resolve(true);
-        }
-      }, 100);
-    });
+    let i = 0;
+    interval = setInterval(() => {
+      i += 100;
+      setProgress(i);
+      if (i >= questionTime) {
+        clearInterval(interval);
+        setGameState('done');
+      }
+    }, 100);
   };
 
   const beginRound = async () => {
@@ -116,20 +115,34 @@ const GameView: FC<IGameView> = () => {
     });
     setAnswers(answers);
     setQuestions(questions);
+    setGameState('playing');
     return newRoundNumber;
   };
 
   const initQuiz = async () => {
     if (!isCookiesConsentApproved || !isPlaying) return navigate('/');
-    for (let i = 0; i < rounds; i++) {
-      await beginRound();
-
-      await readQuestionTimer();
-      await endRound();
-    }
-
-    navigate('/results');
+    beginRound();
   };
+
+  const setSelectedAnswerFromAnswerComponent = (answersArrayIndex: number) => {
+    const answer = answers[answersArrayIndex];
+    setSelectedAnswer({ ...answer });
+  };
+
+  const gameHandler = () => {
+    if (gameState === 'loading') {
+      beginRound();
+    } else if (gameState === 'playing') {
+      readQuestionTimer();
+    } else if (gameState === 'done') {
+      endRound();
+      // Calculate score
+    }
+  };
+
+  useEffect(() => {
+    gameHandler();
+  }, [gameState]);
 
   useEffect(() => {
     initQuiz();
@@ -141,7 +154,11 @@ const GameView: FC<IGameView> = () => {
       <QuestionComponent
         question={questions && questions.length > 0 ? questions[0].question : ''}
       />
-      <AnswersComponent answers={answers} isRoundDone={isRoundDone} />
+      <AnswersComponent
+        answers={answers}
+        isRoundDone={isRoundDone}
+        setSelectedAnswer={setSelectedAnswerFromAnswerComponent}
+      />
       <ProgressComponent status={getPercentage(progress, questionTime)} />
     </div>
   );
