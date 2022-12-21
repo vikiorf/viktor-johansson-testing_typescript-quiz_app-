@@ -30,7 +30,7 @@ const DifficultySettingView: FC<IDifficultySettingView> = () => {
     if (elementId && Object.values(UserDifficultyEnum).includes(elementId)) {
       dispatch(setDifficulty(elementId as UserDifficultyEnum));
       setTimeout(() => {
-        navigate('/language-setup');
+        navigate('/ready');
       }, 500);
     }
   };

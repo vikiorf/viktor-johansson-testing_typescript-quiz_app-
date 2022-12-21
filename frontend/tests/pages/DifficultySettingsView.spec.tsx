@@ -54,7 +54,7 @@ describe('Tests DifficultySettingView', function () {
       await setTimeOut(501);
     });
 
-    expect(window.location.pathname).toEqual('/language-setup');
+    expect(window.location.pathname).toEqual('/ready');
   });
 
   it('verifies checkmark is displayed when random difficulty is clicked', async function () {
@@ -73,6 +73,6 @@ describe('Tests DifficultySettingView', function () {
 
     expect(randomLinkElement.textContent).toContain('✅');
 
-    expect(window.location.pathname).toEqual('/language-setup');
+    expect(window.location.pathname).toEqual('/ready');
   });
 });
