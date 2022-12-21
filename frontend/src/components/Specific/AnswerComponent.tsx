@@ -9,7 +9,7 @@ type IAnswerComponent = {
 
 const AnswerComponent: FC<IAnswerComponent> = props => {
   const defaultClassName =
-    'border-2 h-14 w-36 rounded flex flex-col text-center justify-center hover:cursor-pointer select-none';
+    'border-2 min-h-[3.5rem] p-4 w-36 rounded flex flex-col text-center justify-center hover:cursor-pointer select-none';
 
   const [className, setClassName] = useState<string>(defaultClassName);
 
