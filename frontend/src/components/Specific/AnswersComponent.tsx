@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 
 import { IAnswer } from '@/pages/GameView';
 
-import AnswerComponent from './AnswerComponent';
+import GridItemComponent from '../common/GridItemComponent';
 
 type IAnswersComponent = {
   answers: IAnswer[];
@@ -62,10 +62,10 @@ const AnswersComponent: FC<IAnswersComponent> = props => {
     >
       {mappedAnswers.map((answer, index) => {
         return (
-          <AnswerComponent
+          <GridItemComponent
             key={index}
-            answer={answer.answer}
-            isSelectedAnswer={answer.isSelectedAnswer}
+            textContent={answer.answer}
+            isSelected={answer.isSelectedAnswer}
             isCorrectAnswer={answer.isCorrectAnswer}
             onClick={() => setSelectedAnswerUnsetAllOtherAnswers(index)}
           />
