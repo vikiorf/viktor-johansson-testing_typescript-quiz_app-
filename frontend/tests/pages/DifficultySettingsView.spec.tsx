@@ -26,7 +26,7 @@ describe('Tests DifficultySettingView', function () {
   it('verifies easy difficulty exists and contains the correct text', function () {
     renderWithProviders(<DifficultySettingView />);
 
-    const easyLinkElement = screen.getByTestId('EASY');
+    const easyLinkElement = screen.getByTestId('easy');
 
     expect(easyLinkElement).toBeTruthy;
     expect(easyLinkElement.textContent).toEqual('🐣 Easy');
@@ -35,7 +35,7 @@ describe('Tests DifficultySettingView', function () {
   it('verifies medium difficulty exists and contains the correct text', function () {
     renderWithProviders(<DifficultySettingView />);
 
-    const mediumLinkElement = screen.getByTestId('MEDIUM');
+    const mediumLinkElement = screen.getByTestId('medium');
 
     expect(mediumLinkElement).toBeTruthy;
     expect(mediumLinkElement.textContent).toEqual('🥩 Medium');
@@ -44,7 +44,7 @@ describe('Tests DifficultySettingView', function () {
   it('verifies hard difficulty exists and directs to the correct location when clicked', async function () {
     renderWithProviders(<DifficultySettingView />);
 
-    const hardLinkElement = screen.getByTestId('HARD');
+    const hardLinkElement = screen.getByTestId('hard');
 
     expect(hardLinkElement).toBeTruthy;
     expect(hardLinkElement.textContent).toEqual('👷‍♀️ Hard');
@@ -60,7 +60,7 @@ describe('Tests DifficultySettingView', function () {
   it('verifies checkmark is displayed when random difficulty is clicked', async function () {
     renderWithProviders(<DifficultySettingView />);
 
-    const randomLinkElement = screen.getByTestId('RANDOM');
+    const randomLinkElement = screen.getByTestId('random');
 
     expect(randomLinkElement).toBeTruthy;
     expect(randomLinkElement.textContent).toEqual('🎲 Random');
