@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router';
 import { FC, useEffect, useState } from 'react';
 
 import {
+  IRound,
+  getStoredRounds,
   addRoundInState,
   clearRoundsInState,
   getStoredDifficulty,
-  getStoredRounds,
 } from '@/store/modules/game.slice';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { getStoredIsPlaying, setRoundInState } from '@/store/modules/game.slice';
@@ -95,7 +96,7 @@ const GameView: FC<IGameView> = () => {
   const endRound = () => {
     setIsRoundDone(true);
     setTimeout(() => {
-      if (roundNumber === rounds) return navigate('/results');
+      if (roundNumber === rounds) return navigate('/result');
       setGameState('loading');
     }, 3000);
   };
@@ -164,11 +165,12 @@ const GameView: FC<IGameView> = () => {
 
   const calculateBonusScore = () => {
     let correctQuestionsInRow = 0;
-    for (let i = roundNumber; i >= 0; i--) {
+    for (let i = storedRounds.length - 1; i >= 0; i--) {
       const round = i;
       const isAnsweredCorrectly =
-        storedRounds && storedRounds[round] && storedRounds[round].answeredCorrectly > 0;
-      if (isAnsweredCorrectly) break;
+        storedRounds && storedRounds[round] && storedRounds[round].score > 0;
+
+      if (!isAnsweredCorrectly) break;
       correctQuestionsInRow++;
     }
 
@@ -208,8 +210,8 @@ const GameView: FC<IGameView> = () => {
     const scoreObject = {
       roundNumber,
       score,
-      answeredCorrectly: selectedAnswerIsCorrect,
-    };
+      answeredCorrectly: !!selectedAnswerIsCorrect,
+    } as IRound;
 
     dispatch(addRoundInState(scoreObject));
   };
