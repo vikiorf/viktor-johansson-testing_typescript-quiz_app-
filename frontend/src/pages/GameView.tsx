@@ -8,6 +8,8 @@ import {
   addRoundInState,
   clearRoundsInState,
   getStoredDifficulty,
+  PlayableDifficultyEnum,
+  UserDifficultyEnum,
 } from '@/store/modules/game.slice';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { getStoredIsPlaying, setRoundInState } from '@/store/modules/game.slice';
@@ -81,9 +83,31 @@ const GameView: FC<IGameView> = () => {
 
   let interval: NodeJS.Timeout;
 
-  const fetchQuestionsFromAPI = async () => {
+  const getRandomDifficulty = () => {
+    const playableDifficultiesArr = Object.values(PlayableDifficultyEnum);
+    const amountOfPlayableDifficulties = playableDifficultiesArr.length;
+    const randomDifficulty =
+      playableDifficultiesArr[Math.floor(Math.random() * amountOfPlayableDifficulties)];
+    return randomDifficulty;
+  };
+
+  const getDifficulty = (difficulty: UserDifficultyEnum) => {
+    switch (difficulty) {
+      case UserDifficultyEnum.EASY:
+        return 'easy';
+      case UserDifficultyEnum.MEDIUM:
+        return 'medium';
+      case UserDifficultyEnum.HARD:
+        return 'hard';
+      case UserDifficultyEnum.RANDOM:
+        return getRandomDifficulty();
+    }
+  };
+
+  const fetchQuestionFromAPI = async () => {
+    const difficulty = getDifficulty(storedDifficulty);
     const response = await axios.get(
-      `https://the-trivia-api.com/api/questions?limit=1&difficulty=${storedDifficulty.toLowerCase()}`,
+      `https://the-trivia-api.com/api/questions?limit=1&difficulty=${difficulty}`,
     );
 
     return response.data[0] as ITriviaQuestion;
@@ -127,7 +151,7 @@ const GameView: FC<IGameView> = () => {
 
   const beginRound = async () => {
     setIsRoundDone(false);
-    const question = await fetchQuestionsFromAPI();
+    const question = await fetchQuestionFromAPI();
     const answers = [];
     question.incorrectAnswers.forEach(answer => {
       answers.push({ answer, isSelectedAnswer: false, isCorrectAnswer: false });

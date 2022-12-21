@@ -1,6 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../index';
 
+export enum PlayableDifficultyEnum {
+  EASY = 'easy',
+  MEDIUM = 'medium',
+  HARD = 'hard',
+}
+
+export enum UserDifficultyEnum {
+  EASY = 'easy',
+  MEDIUM = 'medium',
+  HARD = 'hard',
+  RANDOM = 'random',
+}
+
 export enum DifficultyEnum {
   EASY = '🐣 Easy',
   MEDIUM = '🥩 Medium',
@@ -22,7 +35,7 @@ export interface IRound {
 const { reducer: gameReducer, actions } = createSlice({
   name: 'game',
   initialState: {
-    difficulty: '',
+    difficulty: '' as UserDifficultyEnum,
     language: '',
     roundNumber: 0,
     question: '',
@@ -42,7 +55,7 @@ const { reducer: gameReducer, actions } = createSlice({
     clearRoundsInState(state) {
       state.rounds = [];
     },
-    setDifficulty(state, action: PayloadAction<DifficultyEnum>) {
+    setDifficulty(state, action: PayloadAction<UserDifficultyEnum>) {
       state.difficulty = action.payload;
     },
     setLanguage(state, action: PayloadAction<LanguageEnum>) {
