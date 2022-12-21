@@ -13,6 +13,12 @@ export enum LanguageEnum {
   SE = 'se',
 }
 
+export interface IRound {
+  roundNumber: number;
+  score: number;
+  answeredCorrectly: boolean;
+}
+
 const { reducer: gameReducer, actions } = createSlice({
   name: 'game',
   initialState: {
@@ -21,7 +27,7 @@ const { reducer: gameReducer, actions } = createSlice({
     roundNumber: 0,
     question: '',
     isPlaying: false,
-    rounds: [] as any[],
+    rounds: [] as IRound[],
   },
   reducers: {
     setIsPlaying(state, action: PayloadAction<boolean>) {
@@ -30,7 +36,7 @@ const { reducer: gameReducer, actions } = createSlice({
     setRoundInState(state, action: PayloadAction<number>) {
       state.roundNumber = action.payload;
     },
-    addRoundInState(state, action: PayloadAction<any>) {
+    addRoundInState(state, action: PayloadAction<IRound>) {
       state.rounds.push(action.payload);
     },
     clearRoundsInState(state) {
