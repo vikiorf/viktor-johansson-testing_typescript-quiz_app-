@@ -20,6 +20,8 @@ import QuestionComponent from '@/components/Specific/QuestionComponent';
 import ProgressComponent from '@/components/Specific/ProgressComponent';
 import QuestionHeaderComponent from '@/components/Specific/QuestionHeaderComponent';
 import ChooseCategoryComponent from '@/components/Specific/ChooseCategoryComponent';
+import ModalComponent from '@/components/common/ModalComponent';
+import ButtonComponent from '@/components/common/ButtonComponent';
 
 const TRIVIA_BASE_URL =
   import.meta.env.VITE_TRIVIA_BASE_URL || 'https://the-trivia-api.com/api';
@@ -51,6 +53,7 @@ enum GameStateEnum {
   Start_Round,
   Playing_Round,
   End_Round,
+  Error,
 }
 
 export interface IAnswer {
@@ -79,11 +82,12 @@ const GameView: FC<IGameView> = () => {
   const [roundNumber, setRoundNumber] = useState(0);
   const [isRoundDone, setIsRoundDone] = useState(false);
   const [answers, setAnswers] = useState<IAnswer[]>([]);
+  const [fetchQuestionTries, setFetchQuestionTries] = useState(0);
   const [question, setQuestion] = useState<ITriviaQuestion>();
-  const [selectedAnswer, setSelectedAnswer] = useState<IAnsweredQuestion>();
   const [gameState, setGameState] = useState<GameStateEnum>();
-  const [randomCategories, setRandomCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>();
+  const [randomCategories, setRandomCategories] = useState<string[]>([]);
+  const [selectedAnswer, setSelectedAnswer] = useState<IAnsweredQuestion>();
 
   let interval: NodeJS.Timeout;
 
@@ -108,13 +112,25 @@ const GameView: FC<IGameView> = () => {
     }
   };
 
-  const fetchQuestionFromAPI = async () => {
-    const difficulty = getDifficulty(storedDifficulty);
-    const response = await axios.get(
-      `${TRIVIA_BASE_URL}/questions?limit=1&categories=${selectedCategory}&difficulty=${difficulty}`,
-    );
+  const fetchQuestionFromAPI = async (): Promise<ITriviaQuestion | false> => {
+    try {
+      const difficulty = getDifficulty(storedDifficulty);
+      const response = await axios.get(
+        `${TRIVIA_BASE_URL}/questions?limit=1&categories=${selectedCategory}&difficulty=${difficulty}`,
+      );
 
-    return response.data[0] as ITriviaQuestion;
+      setFetchQuestionTries(0);
+
+      return response.data[0] as ITriviaQuestion;
+    } catch (error) {
+      setFetchQuestionTries(prev => prev + 1);
+      if (fetchQuestionTries >= 3) {
+        setGameState(GameStateEnum.Error);
+        return false;
+      }
+
+      return await fetchQuestionFromAPI();
+    }
   };
 
   const getPercentage = (value: number, total: number) => {
@@ -156,6 +172,8 @@ const GameView: FC<IGameView> = () => {
   const beginRound = async () => {
     setIsRoundDone(false);
     const question = await fetchQuestionFromAPI();
+    if (!question) return;
+
     const answers = [];
     question.incorrectAnswers.forEach(answer => {
       answers.push({ answer, isSelectedAnswer: false, isCorrectAnswer: false });
@@ -302,6 +320,15 @@ const GameView: FC<IGameView> = () => {
             setSelectedAnswer={selectCategoryHandler}
             categories={randomCategories}
           />
+        </>
+      )}
+      {gameState === GameStateEnum.Error && (
+        <>
+          <ModalComponent>
+            <h1 className="text-3xl text-center">Error</h1>
+            <p>Something went wrong when getting questions.</p>
+            <ButtonComponent label="Go home" onClick={() => navigate('/')} />
+          </ModalComponent>
         </>
       )}
     </div>
