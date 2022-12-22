@@ -12,7 +12,7 @@ const ChooseCategoryComponent: FC<IChooseCategoryComponent> = ({
 }) => {
   return (
     <div
-      data-testid="answer-container-element"
+      data-testid="categories-container-element"
       className="grid grid-cols-2 gap-4 content-center align-center justify-center justify-items-center"
     >
       {categories.map((category, index) => {

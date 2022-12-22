@@ -28,5 +28,6 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './tests/setup.ts',
+    include: ['**/*.{test,spec,steps}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}']
   },
 } as UserConfig);
