@@ -19,23 +19,18 @@ import AnswersComponent from '@/components/Specific/AnswersComponent';
 import QuestionComponent from '@/components/Specific/QuestionComponent';
 import ProgressComponent from '@/components/Specific/ProgressComponent';
 import QuestionHeaderComponent from '@/components/Specific/QuestionHeaderComponent';
+import ChooseCategoryComponent from '@/components/Specific/ChooseCategoryComponent';
 
-const rounds = 9;
-const questionTimeInMs = 30000;
+const TRIVIA_BASE_URL =
+  import.meta.env.VITE_TRIVIA_BASE_URL || 'https://the-trivia-api.com/api';
+
+const QUESTION_TIME_IN_MS = parseInt(import.meta.env.VITE_QUESTION_TIME_IN_MS) || 30000;
+const TOTAL_AMOUNT_OF_ROUNDS = parseInt(import.meta.env.VITE_TOTAL_AMOUNT_OF_ROUNDS) || 9;
 
 type IGameView = {};
 
 interface ITriviaCategories {
-  'Arts & Literature': ['arts', 'literature', 'arts_and_literature'];
-  'Film & TV': ['movies', 'film', 'film_and_tv'];
-  'Food & Drink': ['food_and_drink', 'food', 'drink'];
-  'General Knowledge': ['general_knowledge'];
-  Geography: ['geography'];
-  History: ['history'];
-  Music: ['music'];
-  Science: ['science'];
-  'Society & Culture': ['society_and_culture', 'society', 'culture'];
-  'Sport & Leisure': ['sport_and_leisure', 'sports', 'sport'];
+  [key: string]: string[];
 }
 
 interface ITriviaQuestion {
@@ -49,6 +44,13 @@ interface ITriviaQuestion {
   regions: string[];
   tags: string[];
   type: string;
+}
+
+enum GameStateEnum {
+  ChooseCategory = 1,
+  Start_Round,
+  Playing_Round,
+  End_Round,
 }
 
 export interface IAnswer {
@@ -79,7 +81,9 @@ const GameView: FC<IGameView> = () => {
   const [answers, setAnswers] = useState<IAnswer[]>([]);
   const [question, setQuestion] = useState<ITriviaQuestion>();
   const [selectedAnswer, setSelectedAnswer] = useState<IAnsweredQuestion>();
-  const [gameState, setGameState] = useState<'loading' | 'playing' | 'done'>();
+  const [gameState, setGameState] = useState<GameStateEnum>();
+  const [randomCategories, setRandomCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>();
 
   let interval: NodeJS.Timeout;
 
@@ -107,7 +111,7 @@ const GameView: FC<IGameView> = () => {
   const fetchQuestionFromAPI = async () => {
     const difficulty = getDifficulty(storedDifficulty);
     const response = await axios.get(
-      `https://the-trivia-api.com/api/questions?limit=1&difficulty=${difficulty}`,
+      `${TRIVIA_BASE_URL}/questions?limit=1&categories=${selectedCategory}&difficulty=${difficulty}`,
     );
 
     return response.data[0] as ITriviaQuestion;
@@ -120,8 +124,8 @@ const GameView: FC<IGameView> = () => {
   const endRound = () => {
     setIsRoundDone(true);
     setTimeout(() => {
-      if (roundNumber === rounds) return navigate('/result');
-      setGameState('loading');
+      if (roundNumber === TOTAL_AMOUNT_OF_ROUNDS) return navigate('/result');
+      setGameState(GameStateEnum.ChooseCategory);
     }, 3000);
   };
 
@@ -130,9 +134,9 @@ const GameView: FC<IGameView> = () => {
     interval = setInterval(() => {
       i += 100;
       setProgress(i);
-      if (i >= questionTimeInMs) {
+      if (i >= QUESTION_TIME_IN_MS) {
         clearInterval(interval);
-        setGameState('done');
+        setGameState(GameStateEnum.End_Round);
       }
     }, 100);
   };
@@ -173,16 +177,16 @@ const GameView: FC<IGameView> = () => {
     });
     setAnswers(shuffledAnswers);
     setQuestion(question);
-    setGameState('playing');
+    setGameState(GameStateEnum.Playing_Round);
   };
 
   const initQuiz = async () => {
     if (!isCookiesConsentApproved || !isPlaying) return navigate('/');
     dispatch(clearRoundsInState());
-    setGameState('loading');
+    setGameState(GameStateEnum.ChooseCategory);
   };
 
-  const setSelectedAnswerFromAnswerComponent = (answersArrayIndex: number) => {
+  const setSelectedAnswerHandler = (answersArrayIndex: number) => {
     const answer = answers[answersArrayIndex];
     setSelectedAnswer({ ...answer, progress });
   };
@@ -219,7 +223,7 @@ const GameView: FC<IGameView> = () => {
     const questionDifficulty = question.difficulty;
     const difficultyScore = getDifficultyScore(questionDifficulty);
 
-    const secondsLeft = Math.ceil((questionTimeInMs - selectedAnswer.progress) / 1000);
+    const secondsLeft = Math.ceil((QUESTION_TIME_IN_MS - selectedAnswer.progress) / 1000);
     const baseScore = secondsLeft * difficultyScore;
 
     const bonusScore = calculateBonusScore();
@@ -240,13 +244,30 @@ const GameView: FC<IGameView> = () => {
     dispatch(addRoundInState(scoreObject));
   };
 
+  const fetchCategories = async () => {
+    const response = await axios.get(`${TRIVIA_BASE_URL}/categories`);
+    const categories = response.data as ITriviaCategories;
+    const categoriesArray = Object.keys(categories) as string[];
+    const shuffledCategories = shuffleArray(categoriesArray) as string[];
+    const randomCategories = shuffledCategories.slice(0, 3);
+    setRandomCategories(randomCategories);
+  };
+
+  const selectCategoryHandler = (categoryArrayIndex: number) => {
+    const category = randomCategories[categoryArrayIndex];
+    setSelectedCategory(category);
+    setGameState(GameStateEnum.Start_Round);
+  };
+
   const gameHandler = () => {
     if (!gameState) return;
-    if (gameState === 'loading') return beginRound();
-    if (gameState === 'playing') return readQuestionTimer();
-
-    saveScore();
-    endRound();
+    if (gameState === GameStateEnum.ChooseCategory) return fetchCategories();
+    if (gameState === GameStateEnum.Start_Round) return beginRound();
+    if (gameState === GameStateEnum.Playing_Round) return readQuestionTimer();
+    if (gameState === GameStateEnum.End_Round) {
+      saveScore();
+      endRound();
+    }
   };
 
   useEffect(() => {
@@ -259,17 +280,30 @@ const GameView: FC<IGameView> = () => {
 
   return (
     <div className="wrapper h-screen w-screen px-10 p-2 bg-primary-bg text-primary-color grid grid-rows-[0.3fr,0.4fr,1fr,0.2fr]">
-      <QuestionHeaderComponent
-        currentQuestionNumber={roundNumber}
-        totalAmountOfQuestions={rounds}
-      />
-      <QuestionComponent question={question ? question.question : ''} />
-      <AnswersComponent
-        answers={answers}
-        isRoundDone={isRoundDone}
-        setSelectedAnswer={setSelectedAnswerFromAnswerComponent}
-      />
-      <ProgressComponent status={getPercentage(progress, questionTimeInMs)} />
+      {gameState !== GameStateEnum.ChooseCategory && (
+        <>
+          <QuestionHeaderComponent
+            currentQuestionNumber={roundNumber}
+            totalAmountOfQuestions={TOTAL_AMOUNT_OF_ROUNDS}
+          />
+          <QuestionComponent question={question ? question.question : ''} />
+          <AnswersComponent
+            answers={answers}
+            isRoundDone={isRoundDone}
+            setSelectedAnswer={setSelectedAnswerHandler}
+          />
+          <ProgressComponent status={getPercentage(progress, QUESTION_TIME_IN_MS)} />
+        </>
+      )}
+      {gameState === GameStateEnum.ChooseCategory && (
+        <>
+          <h1 className="text-3xl mt-6 text-center">Choose category</h1>
+          <ChooseCategoryComponent
+            setSelectedAnswer={selectCategoryHandler}
+            categories={randomCategories}
+          />
+        </>
+      )}
     </div>
   );
 };
