@@ -21,8 +21,6 @@ end
 User->>Application: Play alone
 Application->>User: Select one of 4 difficulties
 User->>Application: Choose difficulty
-Application->>User: Select one of 2 languages
-User->>Application: Select language
 Application->>User: Click when ready to play
 User->>Application: Ready
 loop For total amount of questions

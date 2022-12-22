@@ -6,44 +6,51 @@ import ListItemComponent from '@/components/common/ListItemComponent';
 import ListComponent, { GapSizeEnum } from '@/components/common/ListComponent';
 
 import {
-  DifficultyEnum,
   getStoredDifficulty,
   setDifficulty,
+  UserDifficultyEnum,
 } from '@/store/modules/game.slice';
 import { useNavigate } from 'react-router-dom';
 
 type IDifficultySettingView = {};
+
+enum DisplayDifficultyEnum {
+  'easy' = '🐣 Easy',
+  'medium' = '🥩 Medium',
+  'hard' = '👷‍♀️ Hard',
+  'random' = '🎲 Random',
+}
 
 const DifficultySettingView: FC<IDifficultySettingView> = () => {
   const storedDifficulty = useAppSelector(getStoredDifficulty);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const chooseDifficultyHandler = (elementId: string) => {
-    if (elementId && Object.keys(DifficultyEnum).includes(elementId)) {
-      dispatch(setDifficulty(elementId as DifficultyEnum));
+  const chooseDifficultyHandler = (elementId: UserDifficultyEnum) => {
+    if (elementId && Object.values(UserDifficultyEnum).includes(elementId)) {
+      dispatch(setDifficulty(elementId as UserDifficultyEnum));
       setTimeout(() => {
-        navigate('/language-setup');
+        navigate('/ready');
       }, 500);
     }
   };
 
-  let difficulty: keyof typeof DifficultyEnum;
-
   const difficultyListItems: JSX.Element[] = [];
 
   // Loop through the difficulties and create a list item for each
-  for (difficulty in DifficultyEnum) {
-    const isDifficultyChosen = storedDifficulty === difficulty;
+  for (const difficulty of Object.values(UserDifficultyEnum)) {
+    const userDifficulty = difficulty as UserDifficultyEnum;
+    const isDifficultyChosen = storedDifficulty === userDifficulty;
+
     difficultyListItems.push(
       <ListItemComponent
-        id={difficulty}
+        id={userDifficulty}
         key={difficulty}
         callBack={chooseDifficultyHandler}
         data-testid={`difficulty-${difficulty}`}
         overrideTestId={difficulty}
       >
-        <p>{DifficultyEnum[difficulty]}</p>
+        <p>{DisplayDifficultyEnum[userDifficulty]}</p>
         {isDifficultyChosen && <p>✅</p>}
       </ListItemComponent>,
     );

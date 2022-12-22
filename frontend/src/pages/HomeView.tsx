@@ -1,12 +1,12 @@
 import { FC } from 'react';
 
 import { useAppSelector } from '@/app/hooks';
+import { getStoredCookieConsent, getStoredUserName } from '@/store/modules/user.slice';
 
 import ListItemComponent from '@/components/common/ListItemComponent';
+import NameInputComponent from '@/components/Specific/NameInputComponent';
 import ListComponent, { GapSizeEnum } from '@/components/common/ListComponent';
 import CookiePromptComponent from '@/components/Specific/CookiePromptComponent';
-import { getStoredCookieConsent, getStoredUserName } from '@/store/modules/user.slice';
-import NameInputComponent from '@/components/Specific/NameInputComponent';
 
 type IHomeView = {};
 

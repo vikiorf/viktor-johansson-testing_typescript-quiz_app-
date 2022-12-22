@@ -1,21 +1,25 @@
 import { FC, useState, useEffect } from 'react';
 
-type IAnswerComponent = {
-  answer: string;
-  isSelectedAnswer: boolean;
+type IGridItemComponent = {
+  textContent: string;
+  isSelected: boolean;
   isCorrectAnswer?: boolean;
   onClick: () => void;
 };
 
-const AnswerComponent: FC<IAnswerComponent> = props => {
+const GridItemComponent: FC<IGridItemComponent> = ({
+  isSelected,
+  onClick,
+  textContent,
+  isCorrectAnswer,
+}) => {
   const defaultClassName =
     'border-2 min-h-[3.5rem] p-4 w-36 rounded flex flex-col text-center justify-center hover:cursor-pointer select-none';
-
   const [className, setClassName] = useState<string>(defaultClassName);
 
   const getBackGroundColor = () => {
     let answerBgColor = 'bg-secondary-bg text-primary-color';
-    if (props.isSelectedAnswer) {
+    if (isSelected) {
       answerBgColor = 'bg-primary-button-bg text-primary-bg';
     }
     return answerBgColor;
@@ -24,11 +28,11 @@ const AnswerComponent: FC<IAnswerComponent> = props => {
   const getBorderColor = () => {
     let answerBorderColor = 'border-none';
 
-    if (typeof props.isCorrectAnswer !== 'boolean') return answerBorderColor;
+    if (typeof isCorrectAnswer !== 'boolean') return answerBorderColor;
 
-    if (props.isCorrectAnswer) {
+    if (isCorrectAnswer) {
       answerBorderColor = 'border-2 border-success-color shadow-md shadow-success-color';
-    } else if (!props.isCorrectAnswer) {
+    } else if (!isCorrectAnswer) {
       answerBorderColor = 'border-2 border-error-color';
     }
     return answerBorderColor;
@@ -39,13 +43,13 @@ const AnswerComponent: FC<IAnswerComponent> = props => {
     const borderColor = getBorderColor();
 
     setClassName(defaultClassName + ' ' + bgColor + ' ' + borderColor);
-  }, [props.isSelectedAnswer, props.isCorrectAnswer]);
+  }, [isSelected, isCorrectAnswer]);
 
   return (
-    <div className={className} data-testid="answer-element" onClick={props.onClick}>
-      {props.answer}
+    <div className={className} data-testid="answer-element" onClick={onClick}>
+      {textContent}
     </div>
   );
 };
 
-export default AnswerComponent;
+export default GridItemComponent;

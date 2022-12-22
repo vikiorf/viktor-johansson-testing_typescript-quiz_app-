@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import AnswerComponent from '@/components/Specific/AnswerComponent';
+import GridItemComponent from '@/components/common/GridItemComponent';
 
 describe('Tests Answer Component', function () {
   let isElementClicked: boolean;
@@ -19,9 +19,9 @@ describe('Tests Answer Component', function () {
 
   it('verifies answer component renders with classes for answer not chosen.', function () {
     render(
-      <AnswerComponent
-        answer="Answer"
-        isSelectedAnswer={false}
+      <GridItemComponent
+        textContent="Answer"
+        isSelected={false}
         onClick={handleFunction}
       />,
     );
@@ -37,9 +37,9 @@ describe('Tests Answer Component', function () {
 
   it('verifies answer component executes passed function when clicked.', function () {
     render(
-      <AnswerComponent
-        answer="Answer"
-        isSelectedAnswer={false}
+      <GridItemComponent
+        textContent="Answer"
+        isSelected={false}
         onClick={handleFunction}
       />,
     );
@@ -51,9 +51,9 @@ describe('Tests Answer Component', function () {
 
   it('verifies answer component renders with classes for selected answer.', function () {
     render(
-      <AnswerComponent
-        answer="Answer"
-        isSelectedAnswer={true}
+      <GridItemComponent
+        textContent="Answer"
+        isSelected={true}
         onClick={handleFunction}
       />,
     );
@@ -68,9 +68,9 @@ describe('Tests Answer Component', function () {
 
   it('verifies answer component renders with classes for selected and correct answer.', function () {
     render(
-      <AnswerComponent
-        answer="Answer"
-        isSelectedAnswer={true}
+      <GridItemComponent
+        textContent="Answer"
+        isSelected={true}
         isCorrectAnswer={true}
         onClick={handleFunction}
       />,
@@ -86,9 +86,9 @@ describe('Tests Answer Component', function () {
 
   it('verifies answer component renders with classes for selected and incorrect answer.', function () {
     render(
-      <AnswerComponent
-        answer="Answer"
-        isSelectedAnswer={true}
+      <GridItemComponent
+        textContent="Answer"
+        isSelected={true}
         isCorrectAnswer={false}
         onClick={handleFunction}
       />,
@@ -104,9 +104,9 @@ describe('Tests Answer Component', function () {
 
   it('verifies answer component renders with classes for non selected and correct answer.', function () {
     render(
-      <AnswerComponent
-        answer="Answer"
-        isSelectedAnswer={false}
+      <GridItemComponent
+        textContent="Answer"
+        isSelected={false}
         isCorrectAnswer={true}
         onClick={handleFunction}
       />,
@@ -122,9 +122,9 @@ describe('Tests Answer Component', function () {
 
   it('verifies answer component renders with classes for non selected and incorrect answer.', function () {
     render(
-      <AnswerComponent
-        answer="Answer"
-        isSelectedAnswer={false}
+      <GridItemComponent
+        textContent="Answer"
+        isSelected={false}
         isCorrectAnswer={false}
         onClick={handleFunction}
       />,
