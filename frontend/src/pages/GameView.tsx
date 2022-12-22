@@ -84,10 +84,10 @@ const GameView: FC<IGameView> = () => {
   const [answers, setAnswers] = useState<IAnswer[]>([]);
   const [fetchQuestionTries, setFetchQuestionTries] = useState(0);
   const [question, setQuestion] = useState<ITriviaQuestion>();
-  const [gameState, setGameState] = useState<GameStateEnum>();
   const [selectedCategory, setSelectedCategory] = useState<string>();
   const [randomCategories, setRandomCategories] = useState<string[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<IAnsweredQuestion>();
+  const [gameState, setGameState] = useState<GameStateEnum>(GameStateEnum.ChooseCategory);
 
   let interval: NodeJS.Timeout;
 
