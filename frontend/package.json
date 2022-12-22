@@ -15,8 +15,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint ./src --ext .js,.ts,.tsx",
-    "test": "npm run lint --fix",
-    "test:unit": "vitest"
+    "test": "vitest"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.6.2",
